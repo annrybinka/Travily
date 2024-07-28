@@ -1,10 +1,3 @@
-//
-//  AppDelegate.swift
-//  Travily
-//
-//  Created by Zhukova on 28.07.2024.
-//
-
 import UIKit
 
 @main
