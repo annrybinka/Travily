@@ -28,7 +28,7 @@ final class AppCoordinator {
         tabBarController.viewControllers = controllers.map {
             UINavigationController(rootViewController: $0)
         }
-        tabBarController.selectedIndex = 0
+        tabBarController.selectedIndex = 1
         
         window?.rootViewController = tabBarController
         

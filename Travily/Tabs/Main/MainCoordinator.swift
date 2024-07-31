@@ -4,7 +4,7 @@ final class MainCoordinator {
     func startView() -> UIViewController {
         let vc = MainViewController()
         vc.tabBarItem = UITabBarItem(
-            title: "Главная",
+            title: "Лента путешествий",
             image: UIImage(systemName: "house"),
             tag: 0
         )
