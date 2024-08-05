@@ -1,11 +1,11 @@
 import UIKit
 
 class MainViewController: UIViewController {
-    
     private lazy var tableView: UITableView = {
         let tableView = UITableView(frame: .null, style: .plain)
+        tableView.separatorStyle = .none
         tableView.translatesAutoresizingMaskIntoConstraints = false
-        tableView.estimatedRowHeight = 100
+//        tableView.estimatedRowHeight = 100
         tableView.rowHeight = UITableView.automaticDimension
         
         return tableView
@@ -41,7 +41,6 @@ class MainViewController: UIViewController {
     }
 }
 
-
 extension MainViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         allTrips.count
@@ -56,9 +55,6 @@ extension MainViewController: UITableViewDataSource {
         }
         let trip = allTrips[indexPath.row]
         cell.configure(with: trip)
-//        let cellView = TripCellView()
-//        cellView.configure(with: trip)
-//        cell.setBackground(view: cellView)
         
         return cell
     }
@@ -66,6 +62,6 @@ extension MainViewController: UITableViewDataSource {
 
 extension MainViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        print("=== cell tapped")
+//        print("=== cell tapped")
     }
 }

@@ -1,22 +1,7 @@
 import UIKit
 
+//Исправить или удалить
 extension UIView {
-    enum TextSize: CGFloat {
-        case title = 16
-        case middle = 14
-        case small = 12
-    }
-    
-    enum Spacing: CGFloat {
-        case small = 3
-        case base = 8
-        case baseWithMinus = -8
-        case doubleBase = 16
-        case doubleWithMinus = -16
-        case big = 24
-        case bigWithMinus = -24
-    }
-    
     struct ConstraintX {
         let equalTo: NSLayoutAnchor<NSLayoutXAxisAnchor>
         let constant: Spacing?

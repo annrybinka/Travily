@@ -22,6 +22,7 @@ enum AppСolor {
         darkMode: .lightGray
     )
 }
+
 extension UIColor {
     static func createColor(lightMode: UIColor, darkMode: UIColor) -> UIColor {
         guard #available(iOS 13.0, *) else {

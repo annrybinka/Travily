@@ -1,22 +1,17 @@
 import UIKit
 
+///Текстовый вью с кастомными шрифтами
 final class TripLabel: UILabel {
-    enum Style {
-        case boldTitle
-        case mediumText
-        case smallLight
-    }
+    let style: FontStyle
     
-    let style: Style
-    
-    init(style: Style, text: String?) {
+    init(style: FontStyle, text: String?) {
         self.style = style
         super.init(frame: .zero)
         self.text = text
         setupLabel()
     }
     
-    init(style: Style) {
+    init(style: FontStyle) {
         self.style = style
         super.init(frame: .zero)
         setupLabel()
@@ -27,11 +22,11 @@ final class TripLabel: UILabel {
         numberOfLines = 0
         switch style {
         case .boldTitle:
-            font = UIFont.systemFont(ofSize: 16, weight: .bold)
+            font = FontStyle.boldStyle
         case .mediumText:
-            font = UIFont.systemFont(ofSize: 14, weight: .semibold)
-        case .smallLight:
-            font = UIFont.systemFont(ofSize: 12, weight: .light)
+            font = FontStyle.mediumStyle
+        case .smallLightText:
+            font = FontStyle.smallStyle
         }
     }
     
