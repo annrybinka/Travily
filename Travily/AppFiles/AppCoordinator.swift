@@ -8,6 +8,13 @@ final class AppCoordinator {
         showMainScreen()
     }
     
+    func getProfilePage(user: User) -> UIViewController {
+        let profileCoordinator = ProfileCoordinator()
+        let userPage = profileCoordinator.getProfilePage(user: user)
+        
+        return userPage
+    }
+    
     private func showPasswordScreen() {
 //        let passwordCoordinator = PasswordCoordinator()
 //        passwordCoordinator.appCoordinator = self
@@ -16,7 +23,7 @@ final class AppCoordinator {
     }
     
     private func showMainScreen() {
-        let mainCoordinator = MainCoordinator()
+        let mainCoordinator = MainCoordinator(appCoordinator: self)
         let profileCoordinator = ProfileCoordinator()
         let favoritesCoordinator = FavoritesCoordinator()
         let controllers = [
@@ -31,7 +38,5 @@ final class AppCoordinator {
         tabBarController.selectedIndex = 1
         
         window?.rootViewController = tabBarController
-        
-//        navigationController?.pushViewController(tabBarController, animated: true)
     }
 }

@@ -1,13 +1,17 @@
 import UIKit
 
 enum FontStyle {
-    static let boldStyle = UIFont.createFont(size: 16, weight: .bold)
-    static let mediumStyle = UIFont.createFont(size: 14, weight: .semibold)
-    static let smallStyle = UIFont.createFont(size: 12, weight: .light)
+    enum TextType {
+        case boldTitle
+        case mediumText
+        case smallLightText
+        case accentText
+    }
     
-    case boldTitle
-    case mediumText
-    case smallLightText
+    static let boldTitleFont = UIFont.createFont(size: 16, weight: .bold)
+    static let mediumTextFont = UIFont.createFont(size: 14, weight: .semibold)
+    static let smallLightTextFont = UIFont.createFont(size: 12, weight: .light)
+    static let accentTextFont = UIFont.createFont(size: 14, weight: .semibold)
 }
 
 extension UIFont {

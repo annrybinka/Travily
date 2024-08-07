@@ -13,13 +13,13 @@ enum AppСolor {
         lightMode: .black,
         darkMode: .white
     )
-    static let forSecondText = UIColor.createColor(
-        lightMode: .darkGray,
-        darkMode: .lightGray
-    )
     static let lightGray = UIColor.createColor(
         lightMode: .lightGray,
         darkMode: .lightGray
+    )
+    static let mainAccent  = UIColor.createColor(
+        lightMode: .systemPurple,
+        darkMode: .purple
     )
 }
 
