@@ -1,27 +1,34 @@
 import UIKit
 
+protocol UserHeaderStackViewDelegate: AnyObject {
+    func onTap(in view: UserHeaderStackView)
+}
+
 final class UserHeaderStackView: UIStackView {
+    weak var delegate: UserHeaderStackViewDelegate?
     private static let avatarSize: CGFloat = 60
     
     private lazy var authorImage: UIImageView = {
         let view = UIImageView()
         view.clipsToBounds = true
-        view.layer.cornerRadius = UserHeaderStackView.avatarSize/2
         view.contentMode = .scaleAspectFill
-        view.backgroundColor = AppСolor.forBackground
+        view.layer.cornerRadius = UserHeaderStackView.avatarSize/2
+        view.heightAnchor.constraint(equalToConstant: UserHeaderStackView.avatarSize).isActive = true
+        view.widthAnchor.constraint(equalToConstant: UserHeaderStackView.avatarSize).isActive = true
         
         return view
     }()
     
     private lazy var authorNameLabel = TripLabel(style: .boldTitle)
     
-    func configure(user: User) {
-        authorImage.image = user.avatar
-        authorNameLabel.text = user.fullName
+    func configure(image: UIImage, name: String) {
+        authorImage.image = image
+        authorNameLabel.text = name
     }
 
     override init(frame: CGRect) {
         super.init(frame: frame)
+        addGestureRecognizer()
         setupView()
     }
     
@@ -29,16 +36,19 @@ final class UserHeaderStackView: UIStackView {
         fatalError("init(coder:) has not been implemented")
     }
     
+    private func addGestureRecognizer() {
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(touchUpInside))
+        addGestureRecognizer(tapGesture)
+    }
+    
+    @objc func touchUpInside(sender: UILongPressGestureRecognizer) {
+        delegate?.onTap(in: self)
+    }
+    
     private func setupView() {
         addArrangedSubview(authorImage)
         addArrangedSubview(authorNameLabel)
         self.axis = .horizontal
         self.spacing = Spacing.base.rawValue
-        NSLayoutConstraint.activate(
-            [
-                authorImage.heightAnchor.constraint(equalToConstant: UserHeaderStackView.avatarSize),
-                authorImage.widthAnchor.constraint(equalToConstant: UserHeaderStackView.avatarSize)
-            ]
-        )
     }
 }

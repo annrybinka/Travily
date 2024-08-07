@@ -2,7 +2,7 @@ import UIKit
 
 ///Ячейка с путешествием для общей ленты, избранного и страницы пользователя
 final class TripTableViewCell: UITableViewCell {
-    private lazy var viewForCell = TripCellView()
+    lazy var viewForCell = TripCellView()
 
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)

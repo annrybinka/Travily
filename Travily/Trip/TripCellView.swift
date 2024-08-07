@@ -2,8 +2,7 @@ import UIKit
 
 ///Вью со всем содержимым для ячейки с путешествием
 final class TripCellView: UIView {
-    private lazy var authorStackView = UserHeaderStackView()
-
+    lazy var authorStackView = UserHeaderStackView()
     private lazy var tripTitleLabel = TripLabel(style: .smallLightText, text: StringConstant.destination)
     private lazy var periodTitleLabel = TripLabel(style: .smallLightText, text: StringConstant.date)
     private lazy var tripDestinationLabel = TripLabel(style: .mediumText)
@@ -63,7 +62,6 @@ final class TripCellView: UIView {
         let view = UIView()
         view.backgroundColor = AppСolor.lightGray
         view.heightAnchor.constraint(equalToConstant: 0.5).isActive = true
-        view.translatesAutoresizingMaskIntoConstraints = false
         
         return view
     }()
@@ -96,7 +94,7 @@ final class TripCellView: UIView {
     
     override init(frame: CGRect) {
         super.init(frame: frame)
-        setupView()
+        setupUI()
     }
     
     required init?(coder: NSCoder) {
@@ -105,7 +103,7 @@ final class TripCellView: UIView {
     
     func configure(trip: Trip) {
         guard let author = trip.author else { return }
-        authorStackView.configure(user: author)
+        authorStackView.configure(image: author.avatar, name: author.fullName)
         
         tripDestinationLabel.text = trip.destination
         tripPeriodLabel.text = trip.period
@@ -121,7 +119,7 @@ final class TripCellView: UIView {
         }
     }
     
-    private func setupView() {
+    private func setupUI() {
         backgroundColor = AppСolor.forSecondBackground
         layer.cornerRadius = Spacing.doubleBase.rawValue
         clipsToBounds = true
@@ -132,10 +130,12 @@ final class TripCellView: UIView {
         addSubview(delimiter)
         addSubview(actionsStackView)
         
-        aboutTripLabel.translatesAutoresizingMaskIntoConstraints = false
         headerStackView.translatesAutoresizingMaskIntoConstraints = false
         photoStackView.translatesAutoresizingMaskIntoConstraints = false
+        aboutTripLabel.translatesAutoresizingMaskIntoConstraints = false
+        delimiter.translatesAutoresizingMaskIntoConstraints = false
         actionsStackView.translatesAutoresizingMaskIntoConstraints = false
+        
         NSLayoutConstraint.activate(
             [
                 headerStackView.topAnchor.constraint(

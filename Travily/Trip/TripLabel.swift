@@ -2,31 +2,37 @@ import UIKit
 
 ///Текстовый вью с кастомными шрифтами
 final class TripLabel: UILabel {
-    let style: FontStyle
+    private let style: FontStyle.TextType
     
-    init(style: FontStyle, text: String?) {
+    init(style: FontStyle.TextType, text: String?) {
         self.style = style
         super.init(frame: .zero)
         self.text = text
         setupLabel()
     }
     
-    init(style: FontStyle) {
+    init(style: FontStyle.TextType) {
         self.style = style
         super.init(frame: .zero)
         setupLabel()
     }
     
-    func setupLabel() {
-        textColor = AppСolor.forText
+    private func setupLabel() {
+        
         numberOfLines = 0
         switch style {
         case .boldTitle:
-            font = FontStyle.boldStyle
+            font = FontStyle.boldTitleFont
+            textColor = AppСolor.forText
         case .mediumText:
-            font = FontStyle.mediumStyle
+            font = FontStyle.mediumTextFont
+            textColor = AppСolor.forText
         case .smallLightText:
-            font = FontStyle.smallStyle
+            font = FontStyle.smallLightTextFont
+            textColor = AppСolor.forText
+        case .accentText:
+            font = FontStyle.accentTextFont
+            textColor = AppСolor.mainAccent
         }
     }
     
