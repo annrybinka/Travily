@@ -6,6 +6,8 @@ struct Trip {
     let destination: String
     let period: String
     let about: String?
+    
+    //MARK: значение опционально, чтобы в тестовых экземплярах не ставить заглушку ?? UIImage()
     let images: [UIImage?]
     
     //TODO: убрать это свойство, заменить там где оно используется на UserService

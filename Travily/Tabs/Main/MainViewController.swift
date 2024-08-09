@@ -73,8 +73,6 @@ extension MainViewController: UITableViewDataSource {
         
         ///назначаем делегата у вью ячейки и проставляем тэг, чтобы можно было перейти в профиль автора поста, поставить лайк и добавить пост в избранное
         cell.set(delegate: viewModel, tag: indexPath.row)
-//        cell.viewForCell.delegate = viewModel
-//        cell.viewForCell.tag = indexPath.row
         
         return cell
     }
