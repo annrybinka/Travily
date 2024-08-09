@@ -7,8 +7,7 @@ final class User {
     var aboutMe: String
     let followers: Int
     var subscriptions: Int
-    //TODO: придумать другой механизм привязки постов с путешествиями
-    var trips: [Trip] = []
+//    var trips: [Trip] = []
     
     init(
         login: String,
@@ -28,6 +27,14 @@ final class User {
 }
 
 let users = [
+    User(
+        login: "testUser",
+        fullName: "Test User",
+        avatar: UIImage(systemName: "person.crop.circle") ?? UIImage(),
+        aboutMe: "",
+        followers: 1,
+        subscriptions: 1
+    ),
     User(
         login: "Rachel78",
         fullName: "Рейчел Грин",

@@ -1,11 +1,6 @@
 import UIKit
 
-protocol UserHeaderStackViewDelegate: AnyObject {
-    func onTap(in view: UserHeaderStackView)
-}
-
 final class UserHeaderStackView: UIStackView {
-    weak var delegate: UserHeaderStackViewDelegate?
     private static let avatarSize: CGFloat = 60
     
     private lazy var authorImage: UIImageView = {
@@ -28,21 +23,11 @@ final class UserHeaderStackView: UIStackView {
 
     override init(frame: CGRect) {
         super.init(frame: frame)
-        addGestureRecognizer()
         setupView()
     }
     
     required init(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
-    }
-    
-    private func addGestureRecognizer() {
-        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(touchUpInside))
-        addGestureRecognizer(tapGesture)
-    }
-    
-    @objc func touchUpInside(sender: UILongPressGestureRecognizer) {
-        delegate?.onTap(in: self)
     }
     
     private func setupView() {

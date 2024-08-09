@@ -2,13 +2,12 @@ import UIKit
 
 class MainViewController: UIViewController {
     private let viewModel: MainViewModel
-    
+    private var trips: [Trip] = []
     
     private lazy var tableView: UITableView = {
         let tableView = UITableView(frame: .null, style: .plain)
         tableView.separatorStyle = .none
         tableView.translatesAutoresizingMaskIntoConstraints = false
-//        tableView.estimatedRowHeight = 100
         tableView.rowHeight = UITableView.automaticDimension
         
         return tableView
@@ -23,41 +22,43 @@ class MainViewController: UIViewController {
         fatalError("init(coder:) has not been implemented")
     }
     
-//    override func viewWillAppear(_ animated: Bool) {
-//        super.viewWillAppear(animated)
-//        navigationController?.navigationBar.isHidden = true
-//        tableView.indexPathsForSelectedRows?.forEach{ indexPath in
-//            tableView.deselectRow(
-//                at: indexPath,
-//                animated: animated
-//            )
-//        }
-//    }
-
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        navigationController?.navigationBar.prefersLargeTitles = true
+        viewModel.onViewWillAppear()
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         self.title = tabBarItem.title
-        navigationController?.navigationBar.prefersLargeTitles = true
-        
         view.backgroundColor = AppСolor.forBackground
-        
-        tableView.register(
-            TripTableViewCell.self,
-            forCellReuseIdentifier: "TripTableViewCell"
-        )
-        tableView.delegate = self
-        tableView.dataSource = self
+        bindViewModel()
+        setupTableView()
     }
     
     override func loadView() {
         super.loadView()
         view = tableView
     }
+    
+    private func bindViewModel() {
+        viewModel.onUsersTripsDidChange = { [weak self] trips in
+            self?.trips = trips
+        }
+    }
+    
+    private func setupTableView() {
+        tableView.register(
+            TripTableViewCell.self,
+            forCellReuseIdentifier: "TripTableViewCell"
+        )
+        tableView.dataSource = self
+    }
 }
 
 extension MainViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        viewModel.trips.count
+        trips.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -67,26 +68,14 @@ extension MainViewController: UITableViewDataSource {
         ) as? TripTableViewCell else {
             return UITableViewCell()
         }
-        let trip = viewModel.trips[indexPath.row]
+        let trip = trips[indexPath.row]
         cell.configure(with: trip)
-        cell.viewForCell.authorStackView.delegate = self
-        cell.viewForCell.authorStackView.tag = indexPath.row
+        
+        ///назначаем делегата у вью ячейки и проставляем тэг, чтобы можно было перейти в профиль автора поста, поставить лайк и добавить пост в избранное
+        cell.set(delegate: viewModel, tag: indexPath.row)
+//        cell.viewForCell.delegate = viewModel
+//        cell.viewForCell.tag = indexPath.row
         
         return cell
-    }
-}
-
-extension MainViewController: UITableViewDelegate {
-    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-//        print("=== cell tapped")
-    }
-}
-
-extension MainViewController: UserHeaderStackViewDelegate {
-    func onTap(in stack: UserHeaderStackView) {
-        let index = stack.tag
-        let trip = viewModel.trips[index]
-        guard let user = trip.author else { return }
-        viewModel.goToPage(user: user)
     }
 }

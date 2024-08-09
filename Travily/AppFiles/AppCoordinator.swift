@@ -25,7 +25,7 @@ final class AppCoordinator {
     private func showMainScreen() {
         let mainCoordinator = MainCoordinator(appCoordinator: self)
         let profileCoordinator = ProfileCoordinator()
-        let favoritesCoordinator = FavoritesCoordinator()
+        let favoritesCoordinator = FavoritesCoordinator(appCoordinator: self)
         let controllers = [
             mainCoordinator.startView(),
             profileCoordinator.startView(),

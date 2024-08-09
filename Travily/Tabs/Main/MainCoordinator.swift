@@ -9,18 +9,15 @@ final class MainCoordinator {
     }
     
     func startView() -> UIViewController {
-        //TODO: собрать allTrips из поездок юзеров на которых подписан = fibsTrips + rossTrips + rachelTrips
-        
-        let trips = allTrips.sorted { $0.id > $1.id }
-        let viewModel = MainViewModel(coordinator: self, trips: trips)
-        let vc = MainViewController(viewModel: viewModel)
+        let vm = MainViewModel(coordinator: self)
+        let vc = MainViewController(viewModel: vm)
         vc.tabBarItem = UITabBarItem(
-            title: "Лента путешествий",
+            title: StringConstant.TabBarTitle.main,
             image: UIImage(systemName: "globe"),
             tag: 0
         )
-        startViewController = vc
-        
+        self.startViewController = vc
+
         return vc
     }
     
