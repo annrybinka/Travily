@@ -1,8 +1,16 @@
 import UIKit
 
-///Вью со всем содержимым для ячейки с путешествием
+protocol TripCellViewDelegate: AnyObject {
+    func onAuthorTap(in view: TripCellView)
+    func onLikeTap(in view: TripCellView)
+    func onMarkTap(in view: TripCellView)
+}
+
+///Вью со всем содержимым для ячейки с путешествием, а делегат помогает обрабатывать нажатия на разные элементы вью
 final class TripCellView: UIView {
-    lazy var authorStackView = UserHeaderStackView()
+    weak var delegate: TripCellViewDelegate?
+    
+    private lazy var authorStackView = UserHeaderStackView()
     private lazy var tripTitleLabel = TripLabel(style: .smallLightText, text: StringConstant.destination)
     private lazy var periodTitleLabel = TripLabel(style: .smallLightText, text: StringConstant.date)
     private lazy var tripDestinationLabel = TripLabel(style: .mediumText)
@@ -94,6 +102,7 @@ final class TripCellView: UIView {
     
     override init(frame: CGRect) {
         super.init(frame: frame)
+        addGestureRecognizer()
         setupUI()
     }
     
@@ -101,6 +110,34 @@ final class TripCellView: UIView {
         fatalError("init(coder:) has not been implemented")
     }
     
+    ///Добавляем обработку нажатий на разные элементы вью
+    private func addGestureRecognizer() {
+        let tapOnAuthorGesture = UITapGestureRecognizer(target: self, action: #selector(tapOnAuthor))
+        authorStackView.addGestureRecognizer(tapOnAuthorGesture)
+        
+//        let tapOnLikeGesture = UITapGestureRecognizer(target: self, action: #selector(tapOnLike))
+//        actionsStackView.addGestureRecognizer(tapOnLikeGesture)
+        
+        let tapOnMarkGesture = UITapGestureRecognizer(target: self, action: #selector(tapOnMark))
+        actionsStackView.addGestureRecognizer(tapOnMarkGesture)
+    }
+    
+    @objc private func tapOnAuthor(sender: UILongPressGestureRecognizer) {
+        delegate?.onAuthorTap(in: self)
+    }
+    
+//    @objc private func tapOnLike(sender: UILongPressGestureRecognizer) {
+//        delegate?.onLikeTap(in: self)
+//        likeImageView.tintColor = AppСolor.mainAccent
+//        
+//    }
+    
+    @objc private func tapOnMark(sender: UILongPressGestureRecognizer) {
+        delegate?.onMarkTap(in: self)
+        markImageView.backgroundColor = AppСolor.mainAccent
+    }
+    
+    ///Наполняем вью информацией о поездке
     func configure(trip: Trip) {
         guard let author = trip.author else { return }
         authorStackView.configure(image: author.avatar, name: author.fullName)

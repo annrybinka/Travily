@@ -23,7 +23,6 @@
 		66522AB42C580D6E006A8AC8 /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66522AB32C580D6E006A8AC8 /* User.swift */; };
 		66522AB82C581F26006A8AC8 /* TripTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66522AB72C581F26006A8AC8 /* TripTableViewCell.swift */; };
 		66522ABA2C591FF1006A8AC8 /* TripCellView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66522AB92C591FF1006A8AC8 /* TripCellView.swift */; };
-		66522ABD2C599AE2006A8AC8 /* UIView+extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66522ABC2C599AE2006A8AC8 /* UIView+extension.swift */; };
 		66522ABF2C599BDE006A8AC8 /* Spacing.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66522ABE2C599BDE006A8AC8 /* Spacing.swift */; };
 		66522AC22C59A3BF006A8AC8 /* TripLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66522AC12C59A3BF006A8AC8 /* TripLabel.swift */; };
 		66522AC42C5A469D006A8AC8 /* ProfileHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66522AC32C5A469D006A8AC8 /* ProfileHeaderView.swift */; };
@@ -33,8 +32,9 @@
 		66522ACC2C617687006A8AC8 /* ProfileButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66522ACB2C617687006A8AC8 /* ProfileButton.swift */; };
 		66522ACE2C625E86006A8AC8 /* ProfileViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66522ACD2C625E86006A8AC8 /* ProfileViewModel.swift */; };
 		66522AD02C626D3D006A8AC8 /* MainViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66522ACF2C626D3D006A8AC8 /* MainViewModel.swift */; };
-		66522AD22C639E48006A8AC8 /* UserTripsStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66522AD12C639E48006A8AC8 /* UserTripsStorage.swift */; };
-		66522AD42C63A32A006A8AC8 /* UserTrips.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66522AD32C63A32A006A8AC8 /* UserTrips.swift */; };
+		66522AD22C639E48006A8AC8 /* TripStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66522AD12C639E48006A8AC8 /* TripStorage.swift */; };
+		66522AD62C64030A006A8AC8 /* FavoritesViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66522AD52C64030A006A8AC8 /* FavoritesViewModel.swift */; };
+		66522ADA2C641D37006A8AC8 /* UserService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66522AD92C641D37006A8AC8 /* UserService.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -56,7 +56,6 @@
 		66522AB32C580D6E006A8AC8 /* User.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
 		66522AB72C581F26006A8AC8 /* TripTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TripTableViewCell.swift; sourceTree = "<group>"; };
 		66522AB92C591FF1006A8AC8 /* TripCellView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TripCellView.swift; sourceTree = "<group>"; };
-		66522ABC2C599AE2006A8AC8 /* UIView+extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIView+extension.swift"; sourceTree = "<group>"; };
 		66522ABE2C599BDE006A8AC8 /* Spacing.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Spacing.swift; sourceTree = "<group>"; };
 		66522AC12C59A3BF006A8AC8 /* TripLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TripLabel.swift; sourceTree = "<group>"; };
 		66522AC32C5A469D006A8AC8 /* ProfileHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileHeaderView.swift; sourceTree = "<group>"; };
@@ -66,8 +65,9 @@
 		66522ACB2C617687006A8AC8 /* ProfileButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileButton.swift; sourceTree = "<group>"; };
 		66522ACD2C625E86006A8AC8 /* ProfileViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileViewModel.swift; sourceTree = "<group>"; };
 		66522ACF2C626D3D006A8AC8 /* MainViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainViewModel.swift; sourceTree = "<group>"; };
-		66522AD12C639E48006A8AC8 /* UserTripsStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserTripsStorage.swift; sourceTree = "<group>"; };
-		66522AD32C63A32A006A8AC8 /* UserTrips.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserTrips.swift; sourceTree = "<group>"; };
+		66522AD12C639E48006A8AC8 /* TripStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TripStorage.swift; sourceTree = "<group>"; };
+		66522AD52C64030A006A8AC8 /* FavoritesViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FavoritesViewModel.swift; sourceTree = "<group>"; };
+		66522AD92C641D37006A8AC8 /* UserService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserService.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -158,6 +158,7 @@
 			isa = PBXGroup;
 			children = (
 				66522AAC2C56E153006A8AC8 /* FavoritesCoordinator.swift */,
+				66522AD52C64030A006A8AC8 /* FavoritesViewModel.swift */,
 				66522AA62C56D12F006A8AC8 /* FavoritesViewController.swift */,
 			);
 			path = Favorites;
@@ -167,6 +168,7 @@
 			isa = PBXGroup;
 			children = (
 				66522AB02C580D21006A8AC8 /* Trip.swift */,
+				66522AD12C639E48006A8AC8 /* TripStorage.swift */,
 				66522AC12C59A3BF006A8AC8 /* TripLabel.swift */,
 				66522AB92C591FF1006A8AC8 /* TripCellView.swift */,
 				66522AB72C581F26006A8AC8 /* TripTableViewCell.swift */,
@@ -178,8 +180,7 @@
 			isa = PBXGroup;
 			children = (
 				66522AB32C580D6E006A8AC8 /* User.swift */,
-				66522AD32C63A32A006A8AC8 /* UserTrips.swift */,
-				66522AD12C639E48006A8AC8 /* UserTripsStorage.swift */,
+				66522AD92C641D37006A8AC8 /* UserService.swift */,
 				66522AC52C5A483A006A8AC8 /* UserHeaderStackView.swift */,
 			);
 			path = User;
@@ -192,7 +193,6 @@
 				66522AAE2C56E694006A8AC8 /* AppColor.swift */,
 				66522AC72C610DCA006A8AC8 /* FontStyle.swift */,
 				66522AC92C611ACA006A8AC8 /* StringConstant.swift */,
-				66522ABC2C599AE2006A8AC8 /* UIView+extension.swift */,
 			);
 			path = StyleGuide;
 			sourceTree = "<group>";
@@ -267,11 +267,11 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				66522ADA2C641D37006A8AC8 /* UserService.swift in Sources */,
 				66522AC42C5A469D006A8AC8 /* ProfileHeaderView.swift in Sources */,
 				66522A9E2C56C692006A8AC8 /* AppCoordinator.swift in Sources */,
 				66522AB12C580D21006A8AC8 /* Trip.swift in Sources */,
 				66522ACC2C617687006A8AC8 /* ProfileButton.swift in Sources */,
-				66522ABD2C599AE2006A8AC8 /* UIView+extension.swift in Sources */,
 				66522AAF2C56E694006A8AC8 /* AppColor.swift in Sources */,
 				66522AA92C56DFF2006A8AC8 /* MainCoordinator.swift in Sources */,
 				66522ACA2C611ACA006A8AC8 /* StringConstant.swift in Sources */,
@@ -280,14 +280,14 @@
 				66522A8A2C56BD36006A8AC8 /* AppDelegate.swift in Sources */,
 				66522AC22C59A3BF006A8AC8 /* TripLabel.swift in Sources */,
 				66522AAB2C56E113006A8AC8 /* ProfileCoordinator.swift in Sources */,
-				66522AD42C63A32A006A8AC8 /* UserTrips.swift in Sources */,
 				66522AB82C581F26006A8AC8 /* TripTableViewCell.swift in Sources */,
-				66522AD22C639E48006A8AC8 /* UserTripsStorage.swift in Sources */,
+				66522AD22C639E48006A8AC8 /* TripStorage.swift in Sources */,
 				66522AB42C580D6E006A8AC8 /* User.swift in Sources */,
 				66522ACE2C625E86006A8AC8 /* ProfileViewModel.swift in Sources */,
 				66522ABF2C599BDE006A8AC8 /* Spacing.swift in Sources */,
 				66522ABA2C591FF1006A8AC8 /* TripCellView.swift in Sources */,
 				66522AA72C56D12F006A8AC8 /* FavoritesViewController.swift in Sources */,
+				66522AD62C64030A006A8AC8 /* FavoritesViewModel.swift in Sources */,
 				66522AAD2C56E153006A8AC8 /* FavoritesCoordinator.swift in Sources */,
 				66522AC62C5A483A006A8AC8 /* UserHeaderStackView.swift in Sources */,
 				66522A8C2C56BD36006A8AC8 /* SceneDelegate.swift in Sources */,

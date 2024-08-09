@@ -4,7 +4,6 @@ final class ProfileHeaderView: UIView {
     private lazy var loginLabel = TripLabel(style: .accentText)
     private lazy var userStackView = UserHeaderStackView()
     private lazy var aboutMeLabel = TripLabel(style: .smallLightText)
-    
     private lazy var delimiter: UIView = {
         let view = UIView()
         view.backgroundColor = AppСolor.lightGray
@@ -12,11 +11,9 @@ final class ProfileHeaderView: UIView {
         
         return view
     }()
-
     private lazy var tripsLabel = TripLabel(style: .mediumText)
     private lazy var subscriptionsLabel = TripLabel(style: .mediumText)
     private lazy var followersLabel = TripLabel(style: .mediumText)
-    
     private lazy var infoStackView: UIStackView = {
         let view = UIStackView()
         view.axis = .horizontal
@@ -45,25 +42,32 @@ final class ProfileHeaderView: UIView {
         view.addArrangedSubview(delimiter)
         view.addArrangedSubview(infoStackView)
         view.addArrangedSubview(aboutMeLabel)
-        view.addArrangedSubview(tripButton)
-        view.addArrangedSubview(messageButton)
-        view.addArrangedSubview(UIView())
         
         return view
     }()
     
-    func configure(isCurrent: Bool, user: User) {
-        userStackView.configure(image: user.avatar, name: user.fullName)
-        loginLabel.text = user.login
-        aboutMeLabel.text = user.aboutMe
-        tripsLabel.text = "\(user.trips.count)\nпоездки"
-        subscriptionsLabel.text = "\(user.subscriptions)\nподписок"
-        followersLabel.text = "\(user.followers)\nподписчиков"
+    func configure(isCurrent: Bool, login: String, avatar: UIImage, name: String, aboutMe: String, tripsNumber: Int, subscriptions: Int, followers: Int) {
+        loginLabel.text = login
+        userStackView.configure(image: avatar, name: name)
+        aboutMeLabel.text = aboutMe
+        tripsLabel.text = String.createLabel(
+            type: .trips,
+            with: tripsNumber
+        )
+        subscriptionsLabel.text = String.createLabel(
+            type: .subscriptions,
+            with: subscriptions
+        )
+        followersLabel.text = String.createLabel(
+            type: .followers,
+            with: followers
+        )
         if isCurrent {
-            messageButton.isHidden = true
+            stackView.addArrangedSubview(tripButton)
         } else {
-            tripButton.isHidden = true
+            stackView.addArrangedSubview(messageButton)
         }
+        stackView.addArrangedSubview(UIView())
     }
 
     override init(frame: CGRect) {
