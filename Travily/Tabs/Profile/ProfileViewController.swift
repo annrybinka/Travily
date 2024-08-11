@@ -1,9 +1,8 @@
 import UIKit
 
-class ProfileViewController: UIViewController {    
-    var user: User
-    var userTrips: [Trip] = []
+final class ProfileViewController: UIViewController {
     private let viewModel: ProfileViewModel
+    private var userTrips: [Trip] = []
     
     private lazy var tableView: UITableView = {
         let tableView = UITableView(frame: .null, style: .plain)
@@ -14,8 +13,7 @@ class ProfileViewController: UIViewController {
         return tableView
     }()
     
-    init(user: User, viewModel: ProfileViewModel) {
-        self.user = user
+    init(viewModel: ProfileViewModel) {
         self.viewModel = viewModel
         super.init(nibName: nil, bundle: nil)
     }
@@ -27,7 +25,7 @@ class ProfileViewController: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         navigationController?.navigationBar.prefersLargeTitles = false
-        viewModel.onViewWillAppear(userLogin: user.login)
+        viewModel.updateUserTrips()
         tableView.reloadData()
         setupTableView()
     }
@@ -47,21 +45,15 @@ class ProfileViewController: UIViewController {
     private func bindViewModel() {
         viewModel.onUserTripsDidChange = { [weak self] trips in
             self?.userTrips = trips
+            self?.tableView.reloadData()
         }
     }
     
     private func setupTableView() {
         let headerView = ProfileHeaderView()
-        headerView.configure(
-            isCurrent: viewModel.isCurrentUser,
-            login: user.login,
-            avatar: user.avatar,
-            name: user.fullName,
-            aboutMe: user.aboutMe,
-            tripsNumber: userTrips.count,
-            subscriptions: user.subscriptions,
-            followers: user.followers
-        )
+        headerView.delegate = viewModel
+        guard let userData = viewModel.getUserData() else { return }
+        headerView.configure(isCurrentUser: true, userData: userData)
         headerView.bounds.size.height = 250
         tableView.tableHeaderView = headerView
         tableView.tableFooterView = UIView()
@@ -85,14 +77,32 @@ extension ProfileViewController: UITableViewDataSource {
         ) as? TripTableViewCell else {
             return UITableViewCell()
         }
-        let trip = userTrips[indexPath.row]
-        cell.configure(with: trip)
-        
         ///назначаем делегата у вью ячейки и проставляем тэг, чтобы можно было перейти в профиль автора поста, поставить лайк и добавить пост в избранное
-        cell.set(delegate: viewModel, tag: indexPath.row)
-//        cell.viewForCell.delegate = viewModel
-//        cell.viewForCell.tag = indexPath.row
+        cell.set(delegate: self, tag: indexPath.row)
         
+        let trip = userTrips[indexPath.row]
+        let author = viewModel.getUserData()
+        cell.configure(
+            with: trip,
+            isFavorite: viewModel.isFavorite(tripId: trip.id),
+            authorName: author?.fullName ?? "",
+            avatar: author?.avatar ?? UIImage()
+        )
         return cell
+    }
+}
+
+extension ProfileViewController: TripCellViewDelegate {
+    func onAuthorTap(in view: TripCellView) {
+        //TODO: можно скроллить в начало или подсвечивать что уже на странице этого юзера
+    }
+    
+    func onLikeTap(in view: TripCellView) {
+        print("on Like Tap")
+    }
+    
+    func onMarkTap(in view: TripCellView) {
+        let index = view.tag
+        viewModel.addToFavorites(tripIndex: index)
     }
 }

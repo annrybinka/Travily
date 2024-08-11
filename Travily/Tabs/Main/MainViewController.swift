@@ -1,6 +1,6 @@
 import UIKit
 
-class MainViewController: UIViewController {
+final class MainViewController: UIViewController {
     private let viewModel: MainViewModel
     private var trips: [Trip] = []
     
@@ -25,7 +25,7 @@ class MainViewController: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         navigationController?.navigationBar.prefersLargeTitles = true
-        viewModel.onViewWillAppear()
+        viewModel.updateAllUsersTrips()
     }
     
     override func viewDidLoad() {
@@ -44,6 +44,7 @@ class MainViewController: UIViewController {
     private func bindViewModel() {
         viewModel.onUsersTripsDidChange = { [weak self] trips in
             self?.trips = trips
+            self?.tableView.reloadData()
         }
     }
     
@@ -68,14 +69,33 @@ extension MainViewController: UITableViewDataSource {
         ) as? TripTableViewCell else {
             return UITableViewCell()
         }
-        let trip = trips[indexPath.row]
-        cell.configure(with: trip)
-        
         ///назначаем делегата у вью ячейки и проставляем тэг, чтобы можно было перейти в профиль автора поста, поставить лайк и добавить пост в избранное
-        cell.set(delegate: viewModel, tag: indexPath.row)
-//        cell.viewForCell.delegate = viewModel
-//        cell.viewForCell.tag = indexPath.row
+        cell.set(delegate: self, tag: indexPath.row)
         
+        let trip = trips[indexPath.row]
+        let author = viewModel.getUserData(login: trip.userLogin)
+        cell.configure(
+            with: trip,
+            isFavorite: viewModel.isFavorite(tripId: trip.id),
+            authorName: author?.fullName ?? "",
+            avatar: author?.avatar ?? UIImage()
+        )
         return cell
+    }
+}
+
+extension MainViewController: TripCellViewDelegate {
+    func onAuthorTap(in view: TripCellView) {
+        let index = view.tag
+        viewModel.goToAuthorPage(tripIndex: index)
+    }
+    
+    func onLikeTap(in view: TripCellView) {
+        print("on Like Tap")
+    }
+    
+    func onMarkTap(in view: TripCellView) {
+        let index = view.tag
+        viewModel.changeFavoriteStatus(tripIndex: index)
     }
 }

@@ -11,8 +11,14 @@ final class TripCellView: UIView {
     weak var delegate: TripCellViewDelegate?
     
     private lazy var authorStackView = UserHeaderStackView()
-    private lazy var tripTitleLabel = TripLabel(style: .smallLightText, text: StringConstant.destination)
-    private lazy var periodTitleLabel = TripLabel(style: .smallLightText, text: StringConstant.date)
+    private lazy var tripTitleLabel = TripLabel(
+        style: .smallLightText,
+        text: StringConstant.destination
+    )
+    private lazy var periodTitleLabel = TripLabel(
+        style: .smallLightText, 
+        text: StringConstant.date
+    )
     private lazy var tripDestinationLabel = TripLabel(style: .mediumText)
     private lazy var tripPeriodLabel = TripLabel(style: .mediumText)
     
@@ -78,14 +84,15 @@ final class TripCellView: UIView {
         let view = UIImageView()
         view.image = UIImage(systemName: "hand.thumbsup")
         view.tintColor = AppСolor.forText
+        view.isUserInteractionEnabled = true
         
         return view
     }()
     
     private lazy var markImageView: UIImageView = {
         let view = UIImageView()
-        view.image = UIImage(systemName: "bookmark")
-        view.tintColor = AppСolor.forText
+        
+        view.isUserInteractionEnabled = true
         
         return view
     }()
@@ -115,37 +122,37 @@ final class TripCellView: UIView {
         let tapOnAuthorGesture = UITapGestureRecognizer(target: self, action: #selector(tapOnAuthor))
         authorStackView.addGestureRecognizer(tapOnAuthorGesture)
         
-//        let tapOnLikeGesture = UITapGestureRecognizer(target: self, action: #selector(tapOnLike))
-//        actionsStackView.addGestureRecognizer(tapOnLikeGesture)
+        let tapOnLikeGesture = UITapGestureRecognizer(target: self, action: #selector(tapOnLike))
+        likeImageView.addGestureRecognizer(tapOnLikeGesture)
         
         let tapOnMarkGesture = UITapGestureRecognizer(target: self, action: #selector(tapOnMark))
-        actionsStackView.addGestureRecognizer(tapOnMarkGesture)
+        markImageView.addGestureRecognizer(tapOnMarkGesture)
     }
     
     @objc private func tapOnAuthor(sender: UILongPressGestureRecognizer) {
         delegate?.onAuthorTap(in: self)
     }
     
-//    @objc private func tapOnLike(sender: UILongPressGestureRecognizer) {
-//        delegate?.onLikeTap(in: self)
-//        likeImageView.tintColor = AppСolor.mainAccent
-//        
-//    }
+    @objc private func tapOnLike(sender: UILongPressGestureRecognizer) {
+        delegate?.onLikeTap(in: self)
+    }
     
     @objc private func tapOnMark(sender: UILongPressGestureRecognizer) {
         delegate?.onMarkTap(in: self)
-        markImageView.backgroundColor = AppСolor.mainAccent
     }
     
     ///Наполняем вью информацией о поездке
-    func configure(trip: Trip) {
-        guard let author = trip.author else { return }
-        authorStackView.configure(image: author.avatar, name: author.fullName)
-        
+    func configure(
+        trip: Trip,
+        isFavorite: Bool,
+        authorName: String,
+        avatar: UIImage
+    ) {
+        authorStackView.configure(image: avatar, name: authorName)
         tripDestinationLabel.text = trip.destination
         tripPeriodLabel.text = trip.period
         aboutTripLabel.text = trip.about
-        photoStackView.arrangedSubviews.forEach {$0.removeFromSuperview()}
+        photoStackView.arrangedSubviews.forEach { $0.removeFromSuperview() }
         for image in trip.images {
             let view = UIImageView()
             view.image = image
@@ -153,6 +160,13 @@ final class TripCellView: UIView {
             view.clipsToBounds = true
             view.heightAnchor.constraint(equalTo: view.widthAnchor).isActive = true
             photoStackView.addArrangedSubview(view)
+        }
+        if isFavorite {
+            markImageView.tintColor = AppСolor.mainAccent
+            markImageView.image = UIImage(systemName: "bookmark.fill")
+        } else {
+            markImageView.tintColor = AppСolor.forText
+            markImageView.image = UIImage(systemName: "bookmark")
         }
     }
     

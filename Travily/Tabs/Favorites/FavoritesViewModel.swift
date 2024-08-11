@@ -2,8 +2,8 @@ import Foundation
     
 final class FavoritesViewModel {
     private let coordinator: FavoritesCoordinator
-    private let storage = TripStorage()
-    private let currentUserLogin = "Rachel78"
+    private let storage: TripStorage
+    private let userService: UserService
 
     var onSavedTripsDidChange: (([Trip]) -> Void)?
     private(set) var savedTrips: [Trip] = [] {
@@ -12,41 +12,39 @@ final class FavoritesViewModel {
         }
     }
     
-    init(coordinator: FavoritesCoordinator) {
+    init(coordinator: FavoritesCoordinator, storage: TripStorage, userService: UserService) {
         self.coordinator = coordinator
+        self.storage = storage
+        self.userService = userService
     }
 
-    func onViewWillAppear() {
-        storage.getFavoriteTrips(by: currentUserLogin) { trips in
+    func updateSavedTrips() {
+        storage.getFavoriteTrips() { trips in
             self.savedTrips = trips
         }
     }
     
-    func goToPage(user: User) {
-        coordinator.openPage(user: user)
-    }
-}
-
-extension FavoritesViewModel: TripCellViewDelegate {
-    func onAuthorTap(in view: TripCellView) {
-        let index = view.tag
-        let trip = savedTrips[index]
-        guard let user = trip.author else { return }
-        goToPage(user: user)
+    func getUserData(login: String) -> UserProfileData? {
+        var userProfileData: UserProfileData? = nil
+        userService.getUser(with: login) { user in
+            userProfileData = user.getProfileData()
+        }
+        return userProfileData
     }
     
-    func onLikeTap(in view: TripCellView) {
-        print("on Like Tap")
+    func goToAuthorPage(tripIndex: Int) {
+        let trip = savedTrips[tripIndex]
+        coordinator.openPage(userLogin: trip.userLogin)
     }
     
-    func onMarkTap(in view: TripCellView) {
-        print("on Mark Tap")
-        let index = view.tag
-        storage.removeFavoriteTrip(with: index, for: "Rachel78") { result in
+    func removeFromFavorites(tripIndex: Int) {
+        storage.removeFavoriteTrip(with: tripIndex) { result in
             if result {
-                print("trip deleted")
+                print("=== trip deleted")
+                self.updateSavedTrips()
+            } else {
+                print("error: trip did not delete")
             }
         }
-        onViewWillAppear()
     }
 }

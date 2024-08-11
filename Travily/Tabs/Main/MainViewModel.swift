@@ -2,7 +2,8 @@ import Foundation
 
 final class MainViewModel {
     private let coordinator: MainCoordinator
-    private let storage = TripStorage()
+    private let storage: TripStorage
+    private let userService: UserService
     
     var onUsersTripsDidChange: (([Trip]) -> Void)?
     private(set) var allUsersTrips: [Trip] = [] {
@@ -11,42 +12,61 @@ final class MainViewModel {
         }
     }
     
-    init(coordinator: MainCoordinator) {
+    init(coordinator: MainCoordinator, storage: TripStorage, userService: UserService) {
         self.coordinator = coordinator
+        self.storage = storage
+        self.userService = userService
     }
     
-    ///получаем посты с поездками всех, на кого подписан главный юзер
-    func onViewWillAppear() {
+    ///получаем поездки всех, на кого подписан текущий авторизованный юзер + его поездки
+    func updateAllUsersTrips() {
         storage.getAllTrips(by: ["Rachel78", "doctor-ross", "thebestgirl"]) { trips in
             self.allUsersTrips = trips
         }
     }
     
-    func goToPage(user: User) {
-        coordinator.openPage(user: user)
-    }
-}
-
-extension MainViewModel: TripCellViewDelegate {
-    func onAuthorTap(in view: TripCellView) {
-        let index = view.tag
-        let trip = allUsersTrips[index]
-        guard let user = trip.author else { return }
-        goToPage(user: user)
+    func isFavorite(tripId: Int) -> Bool {
+        var isFavorite = false
+        storage.isFavorite(tripId: tripId) { result in
+            isFavorite = result
+        }
+        return isFavorite
     }
     
-    func onLikeTap(in view: TripCellView) {
-        print("on Like Tap")
+    func getUserData(login: String) -> UserProfileData? {
+        var userProfileData: UserProfileData? = nil
+        userService.getUser(with: login) { user in
+            userProfileData = user.getProfileData()
+        }
+        return userProfileData
     }
     
-    func onMarkTap(in view: TripCellView) {
-        print("on Mark Tap")
-        let index = view.tag
-        let trip = allUsersTrips[index]
-        storage.saveFavorite(trip: trip, for: "Rachel78") { result in
-            if result {
-                print("trip saved")
-                //обратиться к свойству поездки и покрасить закладку
+    func goToAuthorPage(tripIndex: Int) {
+        let trip = allUsersTrips[tripIndex]
+        coordinator.openPage(userLogin: trip.userLogin)
+    }
+    
+    func changeFavoriteStatus(tripIndex: Int) {
+        var trip = allUsersTrips[tripIndex]
+        
+        //TODO: не работает удаление поста, isFavorite не меняется, всегда false
+        if isFavorite(tripId: trip.id) {
+            storage.removeFromFavorite(tripId: trip.id) { result in
+                if result {
+                    print("=== trip deleted")
+                    self.updateAllUsersTrips()
+                } else {
+                    print("error: trip did not delete")
+                }
+            }
+        } else {
+            storage.saveFavorite(trip: trip) { result in
+                if result {
+                    print("=== trip saved")
+                    self.updateAllUsersTrips()
+                } else {
+                    print("error: trip did not saved")
+                }
             }
         }
     }

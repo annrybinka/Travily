@@ -35,6 +35,8 @@
 		66522AD22C639E48006A8AC8 /* TripStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66522AD12C639E48006A8AC8 /* TripStorage.swift */; };
 		66522AD62C64030A006A8AC8 /* FavoritesViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66522AD52C64030A006A8AC8 /* FavoritesViewModel.swift */; };
 		66522ADA2C641D37006A8AC8 /* UserService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66522AD92C641D37006A8AC8 /* UserService.swift */; };
+		66522ADC2C665F86006A8AC8 /* CreateTripViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66522ADB2C665F86006A8AC8 /* CreateTripViewController.swift */; };
+		66522ADE2C691A08006A8AC8 /* UserProfileData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66522ADD2C691A08006A8AC8 /* UserProfileData.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -68,6 +70,8 @@
 		66522AD12C639E48006A8AC8 /* TripStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TripStorage.swift; sourceTree = "<group>"; };
 		66522AD52C64030A006A8AC8 /* FavoritesViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FavoritesViewModel.swift; sourceTree = "<group>"; };
 		66522AD92C641D37006A8AC8 /* UserService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserService.swift; sourceTree = "<group>"; };
+		66522ADB2C665F86006A8AC8 /* CreateTripViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateTripViewController.swift; sourceTree = "<group>"; };
+		66522ADD2C691A08006A8AC8 /* UserProfileData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserProfileData.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -150,6 +154,7 @@
 				66522AA42C56D115006A8AC8 /* ProfileViewController.swift */,
 				66522AC32C5A469D006A8AC8 /* ProfileHeaderView.swift */,
 				66522ACB2C617687006A8AC8 /* ProfileButton.swift */,
+				66522ADB2C665F86006A8AC8 /* CreateTripViewController.swift */,
 			);
 			path = Profile;
 			sourceTree = "<group>";
@@ -181,6 +186,7 @@
 			children = (
 				66522AB32C580D6E006A8AC8 /* User.swift */,
 				66522AD92C641D37006A8AC8 /* UserService.swift */,
+				66522ADD2C691A08006A8AC8 /* UserProfileData.swift */,
 				66522AC52C5A483A006A8AC8 /* UserHeaderStackView.swift */,
 			);
 			path = User;
@@ -267,11 +273,13 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				66522ADC2C665F86006A8AC8 /* CreateTripViewController.swift in Sources */,
 				66522ADA2C641D37006A8AC8 /* UserService.swift in Sources */,
 				66522AC42C5A469D006A8AC8 /* ProfileHeaderView.swift in Sources */,
 				66522A9E2C56C692006A8AC8 /* AppCoordinator.swift in Sources */,
 				66522AB12C580D21006A8AC8 /* Trip.swift in Sources */,
 				66522ACC2C617687006A8AC8 /* ProfileButton.swift in Sources */,
+				66522ADE2C691A08006A8AC8 /* UserProfileData.swift in Sources */,
 				66522AAF2C56E694006A8AC8 /* AppColor.swift in Sources */,
 				66522AA92C56DFF2006A8AC8 /* MainCoordinator.swift in Sources */,
 				66522ACA2C611ACA006A8AC8 /* StringConstant.swift in Sources */,

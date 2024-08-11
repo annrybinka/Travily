@@ -6,14 +6,9 @@ struct Trip {
     let destination: String
     let period: String
     let about: String?
-    let images: [UIImage?]
     
-    //TODO: убрать это свойство, заменить там где оно используется на UserService
-    var author: User? {
-        users.first { user in
-            user.login == userLogin
-        }
-    }
+    //MARK: значение опционально, чтобы в тестовых экземплярах не ставить заглушку ?? UIImage()
+    let images: [UIImage?]
 }
 
 var rachelTrips = [
@@ -70,5 +65,16 @@ var fibsTrips = [
         period: "2022 год",
         about: "Играю возле Центральной кофейни каждый вторник и четверг. Приходите, буду рада сыграть для вас свои лучшие песни.",
         images: [UIImage(named: "fibs"), UIImage(named: "cp")]
+    )
+]
+
+var testTrips = [
+    Trip(
+        id: UUID().hashValue,
+        userLogin: "testUser",
+        destination: "Караганда",
+        period: "1984 год",
+        about: nil,
+        images: []
     )
 ]

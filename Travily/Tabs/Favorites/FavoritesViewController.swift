@@ -1,8 +1,8 @@
 import UIKit
 
-class FavoritesViewController: UIViewController {
+final class FavoritesViewController: UIViewController {
     private let viewModel: FavoritesViewModel
-    var favoriteTrips: [Trip] = []
+    private var favoriteTrips: [Trip] = []
     
     private lazy var tableView: UITableView = {
         let tableView = UITableView(frame: .null, style: .plain)
@@ -25,7 +25,7 @@ class FavoritesViewController: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         navigationController?.navigationBar.prefersLargeTitles = true
-        viewModel.onViewWillAppear()
+        viewModel.updateSavedTrips()
         tableView.reloadData()
     }
     
@@ -70,12 +70,33 @@ extension FavoritesViewController: UITableViewDataSource {
         ) as? TripTableViewCell else {
             return UITableViewCell()
         }
-        let trip = favoriteTrips[indexPath.row]
-        cell.configure(with: trip)
-        
         ///назначаем делегата у вью ячейки и проставляем тэг, чтобы можно было перейти в профиль автора поста, поставить лайк и добавить пост в избранное
-        cell.set(delegate: viewModel, tag: indexPath.row)
+        cell.set(delegate: self, tag: indexPath.row)
         
+        var trip = favoriteTrips[indexPath.row]
+        let author = viewModel.getUserData(login: trip.userLogin)
+        cell.configure(
+            with: trip,
+            isFavorite: true,
+            authorName: author?.fullName ?? "",
+            avatar: author?.avatar ?? UIImage()
+        )
         return cell
+    }
+}
+
+extension FavoritesViewController: TripCellViewDelegate {
+    func onAuthorTap(in view: TripCellView) {
+        let index = view.tag
+        viewModel.goToAuthorPage(tripIndex: index)
+    }
+    
+    func onLikeTap(in view: TripCellView) {
+        print("on Like Tap")
+    }
+    
+    func onMarkTap(in view: TripCellView) {
+        let index = view.tag
+        viewModel.removeFromFavorites(tripIndex: index)
     }
 }
