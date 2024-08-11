@@ -18,6 +18,9 @@ final class ProfileButton: UIButton {
     private func setupButton() {
         self.setTitle(title, for: .normal)
         self.setTitleColor(.white, for: .normal)
+        self.setTitleColor(AppСolor.mainAccent, for: .highlighted)
+        self.setTitleShadowColor(.black, for: .focused)
+        
         self.heightAnchor.constraint(equalToConstant: 50).isActive = true
         self.backgroundColor = AppСolor.mainAccent
         self.layer.cornerRadius = 10

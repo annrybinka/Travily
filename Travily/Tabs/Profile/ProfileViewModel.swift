@@ -2,8 +2,9 @@ import Foundation
 
 final class ProfileViewModel {
     private let coordinator: ProfileCoordinator
-    private let storage = TripStorage()
-    let isCurrentUser: Bool
+    private let storage: TripStorage
+    private let userService: UserService
+    private let userLogin: String
     
     var onUserTripsDidChange: (([Trip]) -> Void)?
     private(set) var userTrips: [Trip] = [] {
@@ -12,51 +13,69 @@ final class ProfileViewModel {
         }
     }
     
-    init(coordinator: ProfileCoordinator, isCurrentUser: Bool) {
+    init(coordinator: ProfileCoordinator, storage: TripStorage, userService: UserService, userLogin: String) {
         self.coordinator = coordinator
-        self.isCurrentUser = isCurrentUser
+        self.storage = storage
+        self.userService = userService
+        self.userLogin = userLogin
     }
     
-    func onViewWillAppear(userLogin: String) {
+    func updateUserTrips() {
         storage.getAllTrips(by: [userLogin]) { trips in
             self.userTrips = trips
         }
     }
     
-    func openCreateTripForm() {
-        coordinator.showCreateTripForm()
+    func isFavorite(tripId: Int) -> Bool {
+        var isFavorite = false
+        storage.isFavorite(tripId: tripId) { result in
+            isFavorite = result
+        }
+        return isFavorite
     }
     
-    func createNew(trip: Trip, by user: String) {
-        storage.addNew(trip: trip, by: user) { result in
-            print("result = \(result)")
-            if result {
-                self.storage.getAllTrips(by: [user]) { trips in
-                    self.userTrips = trips
+    func getUserData() -> UserProfileData? {
+        var userProfileData: UserProfileData? = nil
+        userService.getUser(with: userLogin) { user in
+            userProfileData = user.getProfileData()
+        }
+        return userProfileData
+    }
+    
+    func addToFavorites(tripIndex: Int) {
+        let trip = userTrips[tripIndex]
+        if trip.isFavorite {
+            storage.removeFromFavorite(tripId: trip.id) { result in
+                if result {
+                    print("=== trip deleted")
+                    self.updateUserTrips()
+                } else {
+                    print("error: trip did not delete")
                 }
+            }
+        } else {
+            storage.saveFavorite(trip: trip) { result in
+                if result {
+                    print("=== trip saved")
+                    self.updateUserTrips()
+                } else {
+                    print("error: trip did not saved")
+                }
+            }
+        }
+    }
+    
+    func createNew(trip: Trip) {
+        storage.addNew(trip: trip) { result in
+            if result {
+                self.updateUserTrips()
             }
         }
     }
 }
 
-extension ProfileViewModel: TripCellViewDelegate {
-    func onAuthorTap(in view: TripCellView) {
-        //можно скроллить в начало или подсвечивать что уже на странице этого юзера
-    }
-    
-    func onLikeTap(in view: TripCellView) {
-        print("on Like Tap")
-    }
-    
-    func onMarkTap(in view: TripCellView) {
-        print("on Mark Tap")
-        let index = view.tag
-        let trip = userTrips[index]
-        storage.saveFavorite(trip: trip, for: "Rachel78") { result in
-            if result {
-                print("trip saved")
-                //обратиться к свойству поездки и покрасить закладку
-            }
-        }
+extension ProfileViewModel: ProfileHeaderViewDelegate {    
+    func onCreateTripButtonTap() {
+        coordinator.showCreateTripForm(userLogin: userLogin)
     }
 }

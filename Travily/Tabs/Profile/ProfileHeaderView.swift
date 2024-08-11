@@ -1,6 +1,12 @@
 import UIKit
 
+protocol ProfileHeaderViewDelegate: AnyObject {
+    func onCreateTripButtonTap()
+}
+
 final class ProfileHeaderView: UIView {
+    weak var delegate: ProfileHeaderViewDelegate?
+    
     private lazy var loginLabel = TripLabel(style: .accentText)
     private lazy var userStackView = UserHeaderStackView()
     private lazy var aboutMeLabel = TripLabel(style: .smallLightText)
@@ -25,12 +31,12 @@ final class ProfileHeaderView: UIView {
         return view
     }()
     
-    private lazy var tripButton = ProfileButton(title: "Рассказать о поездке") {
-        print("button tapped")
+    private lazy var createTripButton = ProfileButton(title: "Рассказать о поездке") {
+        self.delegate?.onCreateTripButtonTap()
     }
     
     private lazy var messageButton = ProfileButton(title: "Написать сообщение") {
-        print("button tapped")
+        print("message button tapped")
     }
     
     private lazy var stackView: UIStackView = {
@@ -46,24 +52,24 @@ final class ProfileHeaderView: UIView {
         return view
     }()
     
-    func configure(isCurrent: Bool, login: String, avatar: UIImage, name: String, aboutMe: String, tripsNumber: Int, subscriptions: Int, followers: Int) {
-        loginLabel.text = login
-        userStackView.configure(image: avatar, name: name)
-        aboutMeLabel.text = aboutMe
+    func configure(isCurrentUser: Bool, userData: UserProfileData) {
+        loginLabel.text = userData.login
+        userStackView.configure(image: userData.avatar, name: userData.fullName)
+        aboutMeLabel.text = userData.aboutMe
         tripsLabel.text = String.createLabel(
             type: .trips,
-            with: tripsNumber
+            with: userData.tripsNumber
         )
         subscriptionsLabel.text = String.createLabel(
             type: .subscriptions,
-            with: subscriptions
+            with: userData.subscriptionsNumber
         )
         followersLabel.text = String.createLabel(
             type: .followers,
-            with: followers
+            with: userData.followersNumber
         )
-        if isCurrent {
-            stackView.addArrangedSubview(tripButton)
+        if isCurrentUser {
+            stackView.addArrangedSubview(createTripButton)
         } else {
             stackView.addArrangedSubview(messageButton)
         }
