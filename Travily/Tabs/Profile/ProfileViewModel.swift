@@ -44,7 +44,7 @@ final class ProfileViewModel {
     
     func addToFavorites(tripIndex: Int) {
         let trip = userTrips[tripIndex]
-        if trip.isFavorite {
+        if isFavorite(tripId: trip.id) {
             storage.removeFromFavorite(tripId: trip.id) { result in
                 if result {
                     print("=== trip deleted")

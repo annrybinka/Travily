@@ -33,7 +33,7 @@ final class TripStorage {
     ///проверить, добавлена ли поездка в избранные текущего авторизованного юзера
     func isFavorite(tripId: Int, handler: @escaping (Bool) -> Void) {
         userService.getCurrentUser { user in
-            guard let index = user.favoriteTrips.firstIndex(where:{ $0.id == tripId}) else {
+            guard let _ = user.favoriteTrips.firstIndex(where:{ $0.id == tripId}) else {
                 handler(false)
                 return
             }

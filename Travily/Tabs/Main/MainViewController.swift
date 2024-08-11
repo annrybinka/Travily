@@ -72,11 +72,11 @@ extension MainViewController: UITableViewDataSource {
         ///назначаем делегата у вью ячейки и проставляем тэг, чтобы можно было перейти в профиль автора поста, поставить лайк и добавить пост в избранное
         cell.set(delegate: self, tag: indexPath.row)
         
-        var trip = trips[indexPath.row]
-        trip.isFavorite = viewModel.isFavorite(tripId: trip.id)
+        let trip = trips[indexPath.row]
         let author = viewModel.getUserData(login: trip.userLogin)
         cell.configure(
             with: trip,
+            isFavorite: viewModel.isFavorite(tripId: trip.id),
             authorName: author?.fullName ?? "",
             avatar: author?.avatar ?? UIImage()
         )

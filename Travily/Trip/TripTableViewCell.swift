@@ -13,8 +13,18 @@ final class TripTableViewCell: UITableViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func configure(with trip: Trip, authorName: String, avatar: UIImage) {
-        viewForCell.configure(trip: trip, authorName: authorName, avatar: avatar)
+    func configure(
+        with trip: Trip,
+        isFavorite: Bool,
+        authorName: String,
+        avatar: UIImage
+    ) {
+        viewForCell.configure(
+            trip: trip,
+            isFavorite: isFavorite,
+            authorName: authorName,
+            avatar: avatar
+        )
     }
     
     func set(delegate: TripCellViewDelegate, tag: Int) {

@@ -91,8 +91,7 @@ final class TripCellView: UIView {
     
     private lazy var markImageView: UIImageView = {
         let view = UIImageView()
-        view.image = UIImage(systemName: "bookmark")
-//        view.tintColor = AppСolor.forText
+        
         view.isUserInteractionEnabled = true
         
         return view
@@ -136,21 +135,24 @@ final class TripCellView: UIView {
     
     @objc private func tapOnLike(sender: UILongPressGestureRecognizer) {
         delegate?.onLikeTap(in: self)
-//        likeImageView.tintColor = AppСolor.mainAccent ?
     }
     
     @objc private func tapOnMark(sender: UILongPressGestureRecognizer) {
         delegate?.onMarkTap(in: self)
-//        markImageView change tintColor ?
     }
     
     ///Наполняем вью информацией о поездке
-    func configure(trip: Trip, authorName: String, avatar: UIImage) {
+    func configure(
+        trip: Trip,
+        isFavorite: Bool,
+        authorName: String,
+        avatar: UIImage
+    ) {
         authorStackView.configure(image: avatar, name: authorName)
         tripDestinationLabel.text = trip.destination
         tripPeriodLabel.text = trip.period
         aboutTripLabel.text = trip.about
-        photoStackView.arrangedSubviews.forEach {$0.removeFromSuperview()}
+        photoStackView.arrangedSubviews.forEach { $0.removeFromSuperview() }
         for image in trip.images {
             let view = UIImageView()
             view.image = image
@@ -159,10 +161,12 @@ final class TripCellView: UIView {
             view.heightAnchor.constraint(equalTo: view.widthAnchor).isActive = true
             photoStackView.addArrangedSubview(view)
         }
-        if trip.isFavorite {
+        if isFavorite {
             markImageView.tintColor = AppСolor.mainAccent
+            markImageView.image = UIImage(systemName: "bookmark.fill")
         } else {
             markImageView.tintColor = AppСolor.forText
+            markImageView.image = UIImage(systemName: "bookmark")
         }
     }
     

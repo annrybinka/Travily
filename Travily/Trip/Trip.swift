@@ -9,7 +9,6 @@ struct Trip {
     
     //MARK: значение опционально, чтобы в тестовых экземплярах не ставить заглушку ?? UIImage()
     let images: [UIImage?]
-    var isFavorite = false
 }
 
 var rachelTrips = [

@@ -23,8 +23,6 @@ final class MainViewModel {
         storage.getAllTrips(by: ["Rachel78", "doctor-ross", "thebestgirl"]) { trips in
             self.allUsersTrips = trips
         }
-//        allUsersTrips.map { $0.isFavorite = isFavorite(tripId: $0.id) }
-
     }
     
     func isFavorite(tripId: Int) -> Bool {
@@ -52,7 +50,7 @@ final class MainViewModel {
         var trip = allUsersTrips[tripIndex]
         
         //TODO: не работает удаление поста, isFavorite не меняется, всегда false
-        if trip.isFavorite {
+        if isFavorite(tripId: trip.id) {
             storage.removeFromFavorite(tripId: trip.id) { result in
                 if result {
                     print("=== trip deleted")
@@ -71,6 +69,5 @@ final class MainViewModel {
                 }
             }
         }
-        trip.isFavorite.toggle()
     }
 }

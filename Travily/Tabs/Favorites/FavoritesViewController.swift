@@ -74,10 +74,10 @@ extension FavoritesViewController: UITableViewDataSource {
         cell.set(delegate: self, tag: indexPath.row)
         
         var trip = favoriteTrips[indexPath.row]
-        trip.isFavorite = true
         let author = viewModel.getUserData(login: trip.userLogin)
         cell.configure(
             with: trip,
+            isFavorite: true,
             authorName: author?.fullName ?? "",
             avatar: author?.avatar ?? UIImage()
         )
