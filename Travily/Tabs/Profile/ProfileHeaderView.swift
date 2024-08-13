@@ -2,10 +2,13 @@ import UIKit
 
 protocol ProfileHeaderViewDelegate: AnyObject {
     func onCreateTripButtonTap()
+    func onMessageButtonTap()
+    var onTripsNumberDidChange: ((Int) -> Void)? { get set }
 }
 
 final class ProfileHeaderView: UIView {
     weak var delegate: ProfileHeaderViewDelegate?
+    private var tripsNumber: Int?
     
     private lazy var loginLabel = TripLabel(style: .accentText)
     private lazy var userStackView = UserHeaderStackView()
@@ -36,7 +39,7 @@ final class ProfileHeaderView: UIView {
     }
     
     private lazy var messageButton = ProfileButton(title: "Написать сообщение") {
-        print("message button tapped")
+        self.delegate?.onMessageButtonTap()
     }
     
     private lazy var stackView: UIStackView = {
@@ -58,7 +61,7 @@ final class ProfileHeaderView: UIView {
         aboutMeLabel.text = userData.aboutMe
         tripsLabel.text = String.createLabel(
             type: .trips,
-            with: userData.tripsNumber
+            with: tripsNumber ?? userData.tripsNumber
         )
         subscriptionsLabel.text = String.createLabel(
             type: .subscriptions,
@@ -79,6 +82,11 @@ final class ProfileHeaderView: UIView {
     override init(frame: CGRect) {
         super.init(frame: frame)
         setupUI()
+        
+        delegate?.onTripsNumberDidChange = { trips in
+//            self.tripsLabel.text = String.createLabel(type: .trips, with: trips)
+            self.tripsNumber = trips
+        }
     }
     
     required init?(coder: NSCoder) {

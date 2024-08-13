@@ -25,7 +25,7 @@ final class MainViewModel {
         }
     }
     
-    func isFavorite(tripId: Int) -> Bool {
+    func isFavorite(tripId: String) -> Bool {
         var isFavorite = false
         storage.isFavorite(tripId: tripId) { result in
             isFavorite = result
@@ -47,7 +47,7 @@ final class MainViewModel {
     }
     
     func changeFavoriteStatus(tripIndex: Int) {
-        var trip = allUsersTrips[tripIndex]
+        let trip = allUsersTrips[tripIndex]
         
         //TODO: не работает удаление поста, isFavorite не меняется, всегда false
         if isFavorite(tripId: trip.id) {

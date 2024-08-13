@@ -15,7 +15,7 @@ final class UserService {
         handler(user)
     }
     
-    func isCurrentUser(login: String, handler: (Bool) -> Void) {
-        handler(login == currentUserLogin)
+    func isCurrentUser(login: String) -> Bool {
+        login == currentUserLogin
     }
 }

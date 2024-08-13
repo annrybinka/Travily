@@ -25,6 +25,7 @@ final class ProfileCoordinator {
     }
     
     //можем перейти как в профиль каррентюзера, так и его друга
+    //TODO: для хэдера нужны разные делегаты? либо убирать кнопку "рассказать о поездке" если каррентюзер переходит на свою страницу, сейчас "рассказать о поездке" не работает из ленты и избранного
     func getProfilePage(userLogin: String) -> UIViewController {
         let vm = ProfileViewModel(coordinator: self, storage: storage, userService: userService, userLogin: userLogin)
         let vc = ProfileViewController(viewModel: vm)
@@ -32,10 +33,18 @@ final class ProfileCoordinator {
         return vc
     }
     
-    func showCreateTripForm(userLogin: String) {
-//        startViewController?.modalTransitionStyle = .flipHorizontal
-//        startViewController?.modalPresentationStyle = .overCurrentContext
-        let vm = ProfileViewModel(coordinator: self, storage: storage, userService: userService, userLogin: userLogin)
-        startViewController?.present(CreateTripViewController(viewModel: vm), animated: true)
+    func showCreateTripForm(viewModel: ProfileViewModel) {
+        startViewController?.present(
+            CreateTripViewController(viewModel: viewModel),
+            animated: true
+        )
+    }
+    
+    func presentImagePicker(delegate: UIImagePickerControllerDelegate & UINavigationControllerDelegate) {
+        let imagePicker = UIImagePickerController()
+        imagePicker.delegate = delegate
+        startViewController?.modalTransitionStyle = .flipHorizontal
+        startViewController?.modalPresentationStyle = .overCurrentContext
+        startViewController?.presentedViewController?.present(imagePicker, animated: true)
     }
 }

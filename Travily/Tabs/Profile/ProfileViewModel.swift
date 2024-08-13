@@ -1,15 +1,26 @@
-import Foundation
+import UIKit
 
-final class ProfileViewModel {
+final class ProfileViewModel: NSObject, ProfileHeaderViewDelegate {
     private let coordinator: ProfileCoordinator
     private let storage: TripStorage
     private let userService: UserService
     private let userLogin: String
-    
+    lazy var isCurrentUser: Bool = {
+        userService.isCurrentUser(login: userLogin)
+    }()
+    var onTripsNumberDidChange: ((Int) -> Void)?
     var onUserTripsDidChange: (([Trip]) -> Void)?
     private(set) var userTrips: [Trip] = [] {
         didSet {
             onUserTripsDidChange?(userTrips)
+            onTripsNumberDidChange?(userTrips.count)
+        }
+    }
+    
+    var onAlertMessageDidChange: ((String) -> Void)?
+    private(set) var alertMessage: String = "" {
+        didSet {
+            onAlertMessageDidChange?(alertMessage)
         }
     }
     
@@ -26,7 +37,7 @@ final class ProfileViewModel {
         }
     }
     
-    func isFavorite(tripId: Int) -> Bool {
+    func isFavorite(tripId: String) -> Bool {
         var isFavorite = false
         storage.isFavorite(tripId: tripId) { result in
             isFavorite = result
@@ -65,17 +76,39 @@ final class ProfileViewModel {
         }
     }
     
-    func createNew(trip: Trip) {
-        storage.addNew(trip: trip) { result in
+    func createNew(trip: TripData) {
+        storage.addNew(tripData: trip) { result in
             if result {
                 self.updateUserTrips()
+                //TODO: новая поездка появляется но в хэдере значение не обновляется
             }
         }
     }
-}
-
-extension ProfileViewModel: ProfileHeaderViewDelegate {    
+    
+    func onMessageButtonTap() {
+        alertMessage = "Введите текст сообщения:"
+    }
+    
     func onCreateTripButtonTap() {
-        coordinator.showCreateTripForm(userLogin: userLogin)
+        coordinator.showCreateTripForm(viewModel: self)
+    }
+    
+    func showImagePicker(delegate: UIImagePickerControllerDelegate & UINavigationControllerDelegate) {
+        coordinator.presentImagePicker(delegate: delegate)
     }
 }
+
+
+//
+//extension ProfileViewModel: ProfileHeaderViewDelegate {
+//    var onTripsNumberDidChange: ((Int) -> Void)?
+//    
+//    
+//    func onMessageButtonTap() {
+//        alertMessage = "Введите текст сообщения:"
+//    }
+//    
+//    func onCreateTripButtonTap() {
+//        coordinator.showCreateTripForm(viewModel: self)
+//    }
+//}

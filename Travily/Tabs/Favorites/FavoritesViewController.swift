@@ -73,7 +73,7 @@ extension FavoritesViewController: UITableViewDataSource {
         ///назначаем делегата у вью ячейки и проставляем тэг, чтобы можно было перейти в профиль автора поста, поставить лайк и добавить пост в избранное
         cell.set(delegate: self, tag: indexPath.row)
         
-        var trip = favoriteTrips[indexPath.row]
+        let trip = favoriteTrips[indexPath.row]
         let author = viewModel.getUserData(login: trip.userLogin)
         cell.configure(
             with: trip,

@@ -18,8 +18,8 @@ enum AppСolor {
         darkMode: .lightGray
     )
     static let mainAccent  = UIColor.createColor(
-        lightMode: .systemPurple,
-        darkMode: .purple
+        lightMode: UIColor(named: "AccentColor") ?? .systemPurple,
+        darkMode: UIColor(named: "AccentColor") ?? .purple
     )
 }
 

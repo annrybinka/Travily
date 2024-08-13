@@ -8,12 +8,19 @@ final class TripStorage {
     }
     
     ///добавить новую запись о личной поездке текущего авторизованного юзера
-    func addNew(trip: Trip, handler: @escaping (Bool) -> Void) {
-        //возможно тут стоит передать данные для поездки, а саму поездку с новым id создать тут
-        //id = maxId + 1, простой вариант хранить maxId тут
-        //id = user.Login + user.trips.count, но тогда пропадёт порядковость всех постов
-        //id = user.Login + date.now
+    func addNew(tripData: TripData, handler: @escaping (Bool) -> Void) {
         userService.getCurrentUser { user in
+//            let now: Date = .now
+            let id = "trip\(Date.now)\(user.login)"
+            let trip = Trip(
+                id: id,
+//                createDate: now,
+                userLogin: user.login,
+                destination: tripData.destination,
+                period: tripData.period,
+                about: tripData.about,
+                images: tripData.images
+            )
             user.trips.insert(trip, at: 0)
         }
         handler(true)
@@ -31,7 +38,7 @@ final class TripStorage {
     }
     
     ///проверить, добавлена ли поездка в избранные текущего авторизованного юзера
-    func isFavorite(tripId: Int, handler: @escaping (Bool) -> Void) {
+    func isFavorite(tripId: String, handler: @escaping (Bool) -> Void) {
         userService.getCurrentUser { user in
             guard let _ = user.favoriteTrips.firstIndex(where:{ $0.id == tripId}) else {
                 handler(false)
@@ -65,7 +72,7 @@ final class TripStorage {
     }
     
     ///удалить поездку из избранного, находясь в любом другом разделе, кроме "Избранное"
-    func removeFromFavorite(tripId: Int, handler: @escaping (Bool) -> Void) {
+    func removeFromFavorite(tripId: String, handler: @escaping (Bool) -> Void) {
         userService.getCurrentUser { user in
             guard let index = user.favoriteTrips.firstIndex(where:{ $0.id == tripId}) else { return }
             user.favoriteTrips.remove(at: index)

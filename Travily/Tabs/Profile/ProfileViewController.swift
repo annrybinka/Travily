@@ -47,13 +47,39 @@ final class ProfileViewController: UIViewController {
             self?.userTrips = trips
             self?.tableView.reloadData()
         }
+        viewModel.onAlertMessageDidChange = { [weak self] message in
+            self?.showAlert(message: message)
+        }
+    }
+    
+    private func showAlert(message: String) {
+        let alertController = UIAlertController(
+            title: nil,
+            message: message,
+            preferredStyle: .alert
+        )
+        let sendAction = UIAlertAction(title: "Отправить", style: .default) {_ in
+            guard let text = alertController.textFields?.first?.text else { return }
+            if text != "" {
+                print("Отправлено сообщение: \(text)")
+            }
+        }
+        let cancelAction = UIAlertAction(title: "Отменить", style: .default) {_ in }
+        alertController.addAction(sendAction)
+        alertController.addAction(cancelAction)
+        alertController.addTextField()
+//        alertController.textFields?.forEach({ textField in
+//            textField.keyboardType = UIKeyboardType.default
+//            textField.returnKeyType = UIReturnKeyType.done
+//        })
+        present(alertController, animated: true)
     }
     
     private func setupTableView() {
         let headerView = ProfileHeaderView()
-        headerView.delegate = viewModel
         guard let userData = viewModel.getUserData() else { return }
-        headerView.configure(isCurrentUser: true, userData: userData)
+        headerView.configure(isCurrentUser: viewModel.isCurrentUser, userData: userData)
+        headerView.delegate = viewModel
         headerView.bounds.size.height = 250
         tableView.tableHeaderView = headerView
         tableView.tableFooterView = UIView()
