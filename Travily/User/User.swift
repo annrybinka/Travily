@@ -9,6 +9,7 @@ final class User {
     let subscriptions: Int
     var trips: [Trip]
     var favoriteTrips: [Trip]
+    var likedTrips: [String]
     
     init(
         login: String,
@@ -18,7 +19,8 @@ final class User {
         followers: Int,
         subscriptions: Int,
         trips: [Trip],
-        favoriteTrips: [Trip]
+        favoriteTrips: [Trip],
+        likedTrips: [String]
     ) {
         self.login = login
         self.fullName = fullName
@@ -28,6 +30,7 @@ final class User {
         self.subscriptions = subscriptions
         self.trips = trips
         self.favoriteTrips = favoriteTrips
+        self.likedTrips = likedTrips
     }
     
     func getProfileData() -> UserProfileData {
@@ -38,22 +41,10 @@ final class User {
             aboutMe: aboutMe,
             followersNumber: followers,
             subscriptionsNumber: subscriptions,
-            tripsNumber: trips.count,
-            favoriteTripsNumber: favoriteTrips.count
+            tripsNumber: trips.count
         )
     }
 }
-
-let testUser = User(
-    login: "testUser",
-    fullName: "Test User",
-    avatar: UIImage(systemName: "person.crop.circle") ?? UIImage(),
-    aboutMe: "",
-    followers: 1,
-    subscriptions: 1,
-    trips: testTrips,
-    favoriteTrips: []
-)
 
 let userRachel = User(
     login: "Rachel78",
@@ -63,7 +54,8 @@ let userRachel = User(
     followers: 100,
     subscriptions: 145,
     trips: rachelTrips,
-    favoriteTrips: []
+    favoriteTrips: [],
+    likedTrips: ["trip2017-08-12 00:59:22 +0000doctor-ross", "trip2022-01-02 21:12:09 +0000thebestgirl", "trip2024-07-01 00:59:22 +0000Rachel78"]
 )
 
 let userFibs = User(
@@ -74,7 +66,8 @@ let userFibs = User(
     followers: 5,
     subscriptions: 5,
     trips: fibsTrips,
-    favoriteTrips: []
+    favoriteTrips: [],
+    likedTrips: ["trip2017-08-12 00:59:22 +0000doctor-ross", "trip2024-07-01 00:59:22 +0000Rachel78"]
 )
 
 let userRoss = User(
@@ -85,5 +78,18 @@ let userRoss = User(
     followers: 11096,
     subscriptions: 12578,
     trips: rossTrips,
-    favoriteTrips: []
+    favoriteTrips: [],
+    likedTrips: ["trip2020-10-22 09:43:41 +0000Rachel78", "trip2023-03-12 00:59:22 +0000Rachel78", "trip2024-07-01 00:59:22 +0000Rachel78"]
+)
+
+let testUser = User(
+    login: "testUser",
+    fullName: "Test User",
+    avatar: UIImage(systemName: "person.crop.circle") ?? UIImage(),
+    aboutMe: "",
+    followers: 1,
+    subscriptions: 1,
+    trips: testTrips,
+    favoriteTrips: [],
+    likedTrips: ["trip2017-08-12 00:59:22 +0000doctor-ross", "trip2020-10-22 09:43:41 +0000Rachel78", "trip2022-01-02 21:12:09 +0000thebestgirl", "trip2024-07-01 00:59:22 +0000Rachel78"]
 )

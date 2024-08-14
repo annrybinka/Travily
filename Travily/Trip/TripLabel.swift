@@ -1,6 +1,6 @@
 import UIKit
 
-///Текстовый вью с кастомными шрифтами
+///Лейбл с кастомными шрифтами
 final class TripLabel: UILabel {
     private let style: FontStyle.TextType
     

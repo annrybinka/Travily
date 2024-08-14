@@ -52,7 +52,7 @@ final class FavoritesViewController: UIViewController {
     private func setupTableView() {
         tableView.register(
             TripTableViewCell.self,
-            forCellReuseIdentifier: "TripTableViewCell"
+            forCellReuseIdentifier: TripTableViewCell.id
         )
         tableView.dataSource = self
     }
@@ -65,19 +65,21 @@ extension FavoritesViewController: UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard let cell = tableView.dequeueReusableCell(
-            withIdentifier: "TripTableViewCell",
+            withIdentifier: TripTableViewCell.id,
             for: indexPath
         ) as? TripTableViewCell else {
             return UITableViewCell()
         }
-        ///назначаем делегата у вью ячейки и проставляем тэг, чтобы можно было перейти в профиль автора поста, поставить лайк и добавить пост в избранное
+        ///назначаем делегата и тэг для ячейки, чтобы обрабатывать действия при нажатии на разные элементы вью
         cell.set(delegate: self, tag: indexPath.row)
-        
+        ///подгатавливаем данные для наполнения ячейки и конфигурируем ячейку
         let trip = favoriteTrips[indexPath.row]
         let author = viewModel.getUserData(login: trip.userLogin)
         cell.configure(
             with: trip,
             isFavorite: true,
+            isLiked: viewModel.isLiked(tripId: trip.id),
+            likesNumber: viewModel.getLikesNumber(tripId: trip.id),
             authorName: author?.fullName ?? "",
             avatar: author?.avatar ?? UIImage()
         )
@@ -92,7 +94,8 @@ extension FavoritesViewController: TripCellViewDelegate {
     }
     
     func onLikeTap(in view: TripCellView) {
-        print("on Like Tap")
+        let index = view.tag
+        viewModel.changeLikeStatus(tripIndex: index)
     }
     
     func onMarkTap(in view: TripCellView) {

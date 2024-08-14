@@ -2,7 +2,6 @@ import UIKit
 
 final class CreateTripViewController: UIViewController {
     private let viewModel: ProfileViewModel
-    private let maxImages = 3
     private var images: [UIImage] = []
     
     private lazy var scrollView: UIScrollView = {
@@ -29,14 +28,13 @@ final class CreateTripViewController: UIViewController {
         delegate: self
     )
     
-    private lazy var imageLabel = TripLabel(style: .mediumText, text: "Нет фотографий")
+    private lazy var imageLabel = TripLabel(style: .mediumText, text: "Вы добавили: 0 фото")
     
     private lazy var addImageButton = ProfileButton(title: "Добавить фото") {
         self.viewModel.showImagePicker(delegate: self)
     }
     
     private lazy var publishButton = ProfileButton(title: "Опубликовать") {
-        //TODO: перенести эту логику во viewModel
         guard self.destinationText.text != "" else {
             self.destinationText.borderStyle = .bezel
             return
@@ -61,18 +59,21 @@ final class CreateTripViewController: UIViewController {
         view.addArrangedSubview(addImageButton)
         view.axis = .horizontal
         view.spacing = Spacing.base.rawValue
-        view.distribution = .fillEqually
         
         return view
     }()
     
     private lazy var tripStack: UIStackView = {
         let view = UIStackView()
+        view.addArrangedSubview(imageStack)
         view.addArrangedSubview(destinationText)
         view.addArrangedSubview(periodText)
         view.addArrangedSubview(aboutText)
+        view.addArrangedSubview(publishButton)
         view.axis = .vertical
         view.spacing = Spacing.base.rawValue
+        view.setCustomSpacing(Spacing.doubleBase.rawValue, after: imageStack)
+        view.setCustomSpacing(Spacing.doubleBase.rawValue, after: aboutText)
         
         return view
     }()
@@ -103,29 +104,17 @@ final class CreateTripViewController: UIViewController {
     }
     
     private func setupUI() {
+        let contentView = UIView()
         view.addSubview(scrollView)
-        scrollView.addSubview(UIView())
-        scrollView.addSubview(imageStack)
-        scrollView.addSubview(tripStack)
-        scrollView.addSubview(publishButton)
+        scrollView.addSubview(contentView)
+        contentView.addSubview(tripStack)
         
-        scrollView.translatesAutoresizingMaskIntoConstraints = false
-        imageStack.translatesAutoresizingMaskIntoConstraints = false
-        tripStack.translatesAutoresizingMaskIntoConstraints = false
-        publishButton.translatesAutoresizingMaskIntoConstraints = false
-        
-        tripStack.arrangedSubviews.forEach { view in
-            view.leadingAnchor.constraint(
-                equalTo: tripStack.leadingAnchor,
-                constant: Spacing.doubleBase.rawValue
-            ).isActive = true
-            view.trailingAnchor.constraint(
-                equalTo: tripStack.trailingAnchor,
-                constant: -Spacing.doubleBase.rawValue
-            ).isActive = true
+        [contentView, scrollView, tripStack].forEach { view in
+            view.translatesAutoresizingMaskIntoConstraints = false
+        }
+        [destinationText, periodText, aboutText].forEach { view in
             view.heightAnchor.constraint(equalToConstant: 40).isActive = true
         }
-        
         NSLayoutConstraint.activate(
             [
                 scrollView.topAnchor.constraint(equalTo: view.topAnchor),
@@ -133,22 +122,25 @@ final class CreateTripViewController: UIViewController {
                 scrollView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
                 scrollView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
                 
-                imageStack.topAnchor.constraint(equalTo: scrollView.topAnchor, constant: Spacing.big.rawValue),
-                imageStack.leadingAnchor.constraint(equalTo: scrollView.leadingAnchor),
-                imageStack.trailingAnchor.constraint(equalTo: scrollView.trailingAnchor),
-                imageStack.widthAnchor.constraint(equalTo: scrollView.widthAnchor),
+                contentView.topAnchor.constraint(equalTo: scrollView.topAnchor),
+                contentView.bottomAnchor.constraint(equalTo: scrollView.bottomAnchor),
+                contentView.leadingAnchor.constraint(equalTo: scrollView.leadingAnchor),
+                contentView.trailingAnchor.constraint(equalTo: scrollView.trailingAnchor),
+                contentView.widthAnchor.constraint(equalTo: scrollView.widthAnchor),
                 
-                imageLabel.leadingAnchor.constraint(equalTo: imageStack.leadingAnchor, constant: Spacing.doubleBase.rawValue),
-                addImageButton.trailingAnchor.constraint(equalTo: imageStack.trailingAnchor, constant: -Spacing.doubleBase.rawValue),
-                
-                tripStack.topAnchor.constraint(equalTo: imageStack.bottomAnchor, constant: Spacing.big.rawValue),
-                tripStack.leadingAnchor.constraint(equalTo: scrollView.leadingAnchor),
-                tripStack.trailingAnchor.constraint(equalTo: scrollView.trailingAnchor),
-                tripStack.widthAnchor.constraint(equalTo: scrollView.widthAnchor),
-                
-                publishButton.topAnchor.constraint(equalTo: tripStack.bottomAnchor, constant: Spacing.big.rawValue),
-                publishButton.leadingAnchor.constraint(equalTo: tripStack.leadingAnchor, constant: Spacing.doubleBase.rawValue),
-                publishButton.trailingAnchor.constraint(equalTo: tripStack.trailingAnchor, constant: -Spacing.doubleBase.rawValue)
+                tripStack.topAnchor.constraint(
+                    equalTo: contentView.topAnchor,
+                    constant: Spacing.large.rawValue
+                ),
+                tripStack.leadingAnchor.constraint(
+                    equalTo: contentView.leadingAnchor,
+                    constant: Spacing.large.rawValue
+                ),
+                tripStack.trailingAnchor.constraint(
+                    equalTo: contentView.trailingAnchor,
+                    constant: -Spacing.large.rawValue
+                ),
+                tripStack.bottomAnchor.constraint(equalTo: contentView.bottomAnchor)
             ]
         )
     }
@@ -176,7 +168,7 @@ final class CreateTripViewController: UIViewController {
         
         @objc private func willShowKeyoard(_ notification: NSNotification) {
             let keyboardHeight = (notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue.height
-            scrollView.contentInset.bottom += (keyboardHeight ?? 0.0)/2
+            scrollView.contentInset.bottom += keyboardHeight ?? 0.0
         }
         
         @objc private func willHideKeyoard(_ notification: NSNotification) {
@@ -198,7 +190,7 @@ extension CreateTripViewController: UIImagePickerControllerDelegate, UINavigatio
     ) {
         if let image = info[.originalImage] as? UIImage {
             images.append(image)
-            imageLabel.text = "\(images.count) фото"
+            imageLabel.text = "Вы добавили: \(images.count) фото"
         }
         picker.dismiss(animated: true)
     }

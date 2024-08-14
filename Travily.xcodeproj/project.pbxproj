@@ -154,9 +154,9 @@
 				66522AAA2C56E113006A8AC8 /* ProfileCoordinator.swift */,
 				66522ACD2C625E86006A8AC8 /* ProfileViewModel.swift */,
 				66522AA42C56D115006A8AC8 /* ProfileViewController.swift */,
+				66522ADB2C665F86006A8AC8 /* CreateTripViewController.swift */,
 				66522AC32C5A469D006A8AC8 /* ProfileHeaderView.swift */,
 				66522ACB2C617687006A8AC8 /* ProfileButton.swift */,
-				66522ADB2C665F86006A8AC8 /* CreateTripViewController.swift */,
 			);
 			path = Profile;
 			sourceTree = "<group>";

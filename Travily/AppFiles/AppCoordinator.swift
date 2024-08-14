@@ -2,6 +2,7 @@ import UIKit
 
 final class AppCoordinator {
     var window: UIWindow?
+    private var tabBarController = UITabBarController()
     private let userService = UserService()
     private lazy var tripStorage: TripStorage = {
         TripStorage(userService: self.userService)
@@ -9,7 +10,10 @@ final class AppCoordinator {
     
     func startApp() {
         showMainScreen()
-        //TODO: добавить авторизацию, возможно с UserDefaults внутри
+    }
+    
+    func goToMyProfile() {
+        tabBarController.selectedIndex = 1
     }
     
     func getProfilePage(userLogin: String) -> UIViewController {
@@ -24,8 +28,6 @@ final class AppCoordinator {
     }
     
     private func showMainScreen() {
-        //TODO: заменить на UserDefaults
-        //let login = UserDefaults.standard.string(forKey: "currentUserLogin")
         var login = ""
         userService.getCurrentUser { user in
             login = user.login
@@ -50,12 +52,11 @@ final class AppCoordinator {
             profileCoordinator.startView(),
             favoritesCoordinator.startView()
         ]
-        let tabBarController = UITabBarController()
         tabBarController.viewControllers = controllers.map {
             UINavigationController(rootViewController: $0)
         }
-        tabBarController.selectedIndex = 1
-        
+        tabBarController.selectedIndex = 0
+
         window?.rootViewController = tabBarController
     }
 }

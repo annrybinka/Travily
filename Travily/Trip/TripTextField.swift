@@ -1,5 +1,6 @@
 import UIKit
 
+///Поле для ввода текста с кастомными шрифтами
 final class TripTextField: UITextField {
     init(style: FontStyle.TextType, placeholder: String?, delegate: UITextFieldDelegate?) {
         super.init(frame: .zero)

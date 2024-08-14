@@ -19,9 +19,8 @@ final class ProfileButton: UIButton {
         self.setTitle(title, for: .normal)
         self.setTitleColor(.white, for: .normal)
         self.setTitleColor(AppСolor.mainAccent, for: .highlighted)
-//        self.setBackgroundImage(UIImage(named: "rg"), for: .disabled)
-        self.heightAnchor.constraint(equalToConstant: 50).isActive = true
         self.backgroundColor = AppСolor.mainAccent
+        self.heightAnchor.constraint(equalToConstant: 50).isActive = true
         self.layer.cornerRadius = 10
         self.clipsToBounds = true
         self.addTarget(self, action: #selector(buttonTapped(_:)), for: .touchUpInside)

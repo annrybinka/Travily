@@ -34,7 +34,6 @@ final class ProfileViewController: UIViewController {
         super.viewDidLoad()
         view.backgroundColor = AppСolor.forBackground
         bindViewModel()
-        
     }
     
     override func loadView() {
@@ -68,10 +67,6 @@ final class ProfileViewController: UIViewController {
         alertController.addAction(sendAction)
         alertController.addAction(cancelAction)
         alertController.addTextField()
-//        alertController.textFields?.forEach({ textField in
-//            textField.keyboardType = UIKeyboardType.default
-//            textField.returnKeyType = UIReturnKeyType.done
-//        })
         present(alertController, animated: true)
     }
     
@@ -85,7 +80,7 @@ final class ProfileViewController: UIViewController {
         tableView.tableFooterView = UIView()
         tableView.register(
             TripTableViewCell.self,
-            forCellReuseIdentifier: "TripTableViewCell"
+            forCellReuseIdentifier: TripTableViewCell.id
         )
         tableView.dataSource = self
     }
@@ -98,19 +93,21 @@ extension ProfileViewController: UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard let cell = tableView.dequeueReusableCell(
-            withIdentifier: "TripTableViewCell",
+            withIdentifier: TripTableViewCell.id,
             for: indexPath
         ) as? TripTableViewCell else {
             return UITableViewCell()
         }
-        ///назначаем делегата у вью ячейки и проставляем тэг, чтобы можно было перейти в профиль автора поста, поставить лайк и добавить пост в избранное
+        ///назначаем делегата и тэг для ячейки, чтобы обрабатывать действия при нажатии на разные элементы вью
         cell.set(delegate: self, tag: indexPath.row)
-        
+        ///подгатавливаем данные для наполнения ячейки и конфигурируем ячейку
         let trip = userTrips[indexPath.row]
         let author = viewModel.getUserData()
         cell.configure(
             with: trip,
             isFavorite: viewModel.isFavorite(tripId: trip.id),
+            isLiked: viewModel.isLiked(tripId: trip.id),
+            likesNumber: viewModel.getLikesNumber(tripId: trip.id),
             authorName: author?.fullName ?? "",
             avatar: author?.avatar ?? UIImage()
         )
@@ -120,15 +117,16 @@ extension ProfileViewController: UITableViewDataSource {
 
 extension ProfileViewController: TripCellViewDelegate {
     func onAuthorTap(in view: TripCellView) {
-        //TODO: можно скроллить в начало или подсвечивать что уже на странице этого юзера
+        tableView.scrollRectToVisible(CGRect(x: 0, y: 0, width: 1, height: 1), animated: true)
     }
     
     func onLikeTap(in view: TripCellView) {
-        print("on Like Tap")
+        let index = view.tag
+        viewModel.changeLikeStatus(tripIndex: index)
     }
     
     func onMarkTap(in view: TripCellView) {
         let index = view.tag
-        viewModel.addToFavorites(tripIndex: index)
+        viewModel.changeFavoriteStatus(tripIndex: index)
     }
 }

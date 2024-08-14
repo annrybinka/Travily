@@ -1,7 +1,6 @@
 import Foundation
 
 final class UserService {
-    //TODO: currentUserLogin получать через UserDefaults
     private let currentUserLogin = "Rachel78"
     private let users = [userRachel, userFibs, userRoss, testUser]
     
@@ -17,5 +16,16 @@ final class UserService {
     
     func isCurrentUser(login: String) -> Bool {
         login == currentUserLogin
+    }
+    
+    ///проверяем кто ставил лайк поездке среди всех юзеров
+    func getUsersLiked(tripId: String, handler: ([String]) -> Void) {
+        var result: [String] = []
+        users.forEach { user in
+            if user.likedTrips.contains(where: { $0 == tripId }) {
+                result.append(user.login)
+            }
+        }
+        handler(result)
     }
 }

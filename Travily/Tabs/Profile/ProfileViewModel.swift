@@ -1,6 +1,6 @@
 import UIKit
 
-final class ProfileViewModel: NSObject, ProfileHeaderViewDelegate {
+final class ProfileViewModel {
     private let coordinator: ProfileCoordinator
     private let storage: TripStorage
     private let userService: UserService
@@ -8,15 +8,12 @@ final class ProfileViewModel: NSObject, ProfileHeaderViewDelegate {
     lazy var isCurrentUser: Bool = {
         userService.isCurrentUser(login: userLogin)
     }()
-    var onTripsNumberDidChange: ((Int) -> Void)?
     var onUserTripsDidChange: (([Trip]) -> Void)?
     private(set) var userTrips: [Trip] = [] {
         didSet {
             onUserTripsDidChange?(userTrips)
-            onTripsNumberDidChange?(userTrips.count)
         }
     }
-    
     var onAlertMessageDidChange: ((String) -> Void)?
     private(set) var alertMessage: String = "" {
         didSet {
@@ -38,11 +35,27 @@ final class ProfileViewModel: NSObject, ProfileHeaderViewDelegate {
     }
     
     func isFavorite(tripId: String) -> Bool {
-        var isFavorite = false
-        storage.isFavorite(tripId: tripId) { result in
-            isFavorite = result
+        var result = false
+        userService.getCurrentUser { user in
+            result = user.favoriteTrips.contains(where: { $0.id == tripId })
         }
-        return isFavorite
+        return result
+    }
+    
+    func isLiked(tripId: String) -> Bool {
+        var result = false
+        userService.getCurrentUser { user in
+            result = user.likedTrips.contains(where: { $0 == tripId })
+        }
+        return result
+    }
+    
+    func getLikesNumber(tripId: String) -> Int {
+        var result = 0
+        userService.getUsersLiked(tripId: tripId) { users in
+            result = users.count
+        }
+        return result
     }
     
     func getUserData() -> UserProfileData? {
@@ -53,12 +66,23 @@ final class ProfileViewModel: NSObject, ProfileHeaderViewDelegate {
         return userProfileData
     }
     
-    func addToFavorites(tripIndex: Int) {
+    func changeLikeStatus(tripIndex: Int) {
+        let trip = userTrips[tripIndex]
+        userService.getCurrentUser { user in
+            if isLiked(tripId: trip.id) {
+                user.likedTrips.removeAll { $0 == trip.id }
+            } else {
+                user.likedTrips.append(trip.id)
+            }
+        }
+        self.updateUserTrips()
+    }
+    
+    func changeFavoriteStatus(tripIndex: Int) {
         let trip = userTrips[tripIndex]
         if isFavorite(tripId: trip.id) {
             storage.removeFromFavorite(tripId: trip.id) { result in
                 if result {
-                    print("=== trip deleted")
                     self.updateUserTrips()
                 } else {
                     print("error: trip did not delete")
@@ -67,7 +91,6 @@ final class ProfileViewModel: NSObject, ProfileHeaderViewDelegate {
         } else {
             storage.saveFavorite(trip: trip) { result in
                 if result {
-                    print("=== trip saved")
                     self.updateUserTrips()
                 } else {
                     print("error: trip did not saved")
@@ -80,17 +103,8 @@ final class ProfileViewModel: NSObject, ProfileHeaderViewDelegate {
         storage.addNew(tripData: trip) { result in
             if result {
                 self.updateUserTrips()
-                //TODO: новая поездка появляется но в хэдере значение не обновляется
             }
         }
-    }
-    
-    func onMessageButtonTap() {
-        alertMessage = "Введите текст сообщения:"
-    }
-    
-    func onCreateTripButtonTap() {
-        coordinator.showCreateTripForm(viewModel: self)
     }
     
     func showImagePicker(delegate: UIImagePickerControllerDelegate & UINavigationControllerDelegate) {
@@ -98,17 +112,12 @@ final class ProfileViewModel: NSObject, ProfileHeaderViewDelegate {
     }
 }
 
-
-//
-//extension ProfileViewModel: ProfileHeaderViewDelegate {
-//    var onTripsNumberDidChange: ((Int) -> Void)?
-//    
-//    
-//    func onMessageButtonTap() {
-//        alertMessage = "Введите текст сообщения:"
-//    }
-//    
-//    func onCreateTripButtonTap() {
-//        coordinator.showCreateTripForm(viewModel: self)
-//    }
-//}
+extension ProfileViewModel: ProfileHeaderViewDelegate {
+    func onMessageButtonTap() {
+        alertMessage = "Введите текст сообщения:"
+    }
+    
+    func onCreateTripButtonTap() {
+        coordinator.showCreateTripForm(viewModel: self)
+    }
+}

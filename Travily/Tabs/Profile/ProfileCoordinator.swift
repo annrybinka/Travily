@@ -1,9 +1,9 @@
 import UIKit
 
 final class ProfileCoordinator {
-    private var startViewController: UIViewController?
     private let storage: TripStorage
     private let userService: UserService
+    private var startViewController: UIViewController?
     
     init(storage: TripStorage, userService: UserService, userLogin: String) {
         self.storage = storage
@@ -24,8 +24,7 @@ final class ProfileCoordinator {
         return startViewController ?? UIViewController()
     }
     
-    //можем перейти как в профиль каррентюзера, так и его друга
-    //TODO: для хэдера нужны разные делегаты? либо убирать кнопку "рассказать о поездке" если каррентюзер переходит на свою страницу, сейчас "рассказать о поездке" не работает из ленты и избранного
+    ///метод для перехода в профили юзеров из ленты или избранного
     func getProfilePage(userLogin: String) -> UIViewController {
         let vm = ProfileViewModel(coordinator: self, storage: storage, userService: userService, userLogin: userLogin)
         let vc = ProfileViewController(viewModel: vm)
@@ -33,6 +32,7 @@ final class ProfileCoordinator {
         return vc
     }
     
+    ///открываем модальное окно с формой для создания поездки
     func showCreateTripForm(viewModel: ProfileViewModel) {
         startViewController?.present(
             CreateTripViewController(viewModel: viewModel),
@@ -43,8 +43,6 @@ final class ProfileCoordinator {
     func presentImagePicker(delegate: UIImagePickerControllerDelegate & UINavigationControllerDelegate) {
         let imagePicker = UIImagePickerController()
         imagePicker.delegate = delegate
-        startViewController?.modalTransitionStyle = .flipHorizontal
-        startViewController?.modalPresentationStyle = .overCurrentContext
         startViewController?.presentedViewController?.present(imagePicker, animated: true)
     }
 }
