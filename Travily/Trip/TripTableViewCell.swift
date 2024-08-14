@@ -1,7 +1,7 @@
 import UIKit
 
-///Ячейка с путешествием для общей ленты, избранного и страницы пользователя
 final class TripTableViewCell: UITableViewCell {
+    static let id = "TripTableViewCell"
     private lazy var viewForCell = TripCellView()
 
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
@@ -16,12 +16,16 @@ final class TripTableViewCell: UITableViewCell {
     func configure(
         with trip: Trip,
         isFavorite: Bool,
+        isLiked: Bool,
+        likesNumber: Int,
         authorName: String,
         avatar: UIImage
     ) {
         viewForCell.configure(
             trip: trip,
             isFavorite: isFavorite,
+            isLiked: isLiked,
+            likesNumber: likesNumber,
             authorName: authorName,
             avatar: avatar
         )

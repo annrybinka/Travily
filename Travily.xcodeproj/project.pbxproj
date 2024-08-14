@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		660A6C882C6A62B0006EA864 /* TripTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 660A6C872C6A62B0006EA864 /* TripTextField.swift */; };
 		66522A8A2C56BD36006A8AC8 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66522A892C56BD36006A8AC8 /* AppDelegate.swift */; };
 		66522A8C2C56BD36006A8AC8 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66522A8B2C56BD36006A8AC8 /* SceneDelegate.swift */; };
 		66522A8E2C56BD36006A8AC8 /* MainViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66522A8D2C56BD36006A8AC8 /* MainViewController.swift */; };
@@ -40,6 +41,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		660A6C872C6A62B0006EA864 /* TripTextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TripTextField.swift; sourceTree = "<group>"; };
 		66522A862C56BD35006A8AC8 /* Travily.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Travily.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		66522A892C56BD36006A8AC8 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		66522A8B2C56BD36006A8AC8 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -152,9 +154,9 @@
 				66522AAA2C56E113006A8AC8 /* ProfileCoordinator.swift */,
 				66522ACD2C625E86006A8AC8 /* ProfileViewModel.swift */,
 				66522AA42C56D115006A8AC8 /* ProfileViewController.swift */,
+				66522ADB2C665F86006A8AC8 /* CreateTripViewController.swift */,
 				66522AC32C5A469D006A8AC8 /* ProfileHeaderView.swift */,
 				66522ACB2C617687006A8AC8 /* ProfileButton.swift */,
-				66522ADB2C665F86006A8AC8 /* CreateTripViewController.swift */,
 			);
 			path = Profile;
 			sourceTree = "<group>";
@@ -175,6 +177,7 @@
 				66522AB02C580D21006A8AC8 /* Trip.swift */,
 				66522AD12C639E48006A8AC8 /* TripStorage.swift */,
 				66522AC12C59A3BF006A8AC8 /* TripLabel.swift */,
+				660A6C872C6A62B0006EA864 /* TripTextField.swift */,
 				66522AB92C591FF1006A8AC8 /* TripCellView.swift */,
 				66522AB72C581F26006A8AC8 /* TripTableViewCell.swift */,
 			);
@@ -284,6 +287,7 @@
 				66522AA92C56DFF2006A8AC8 /* MainCoordinator.swift in Sources */,
 				66522ACA2C611ACA006A8AC8 /* StringConstant.swift in Sources */,
 				66522A8E2C56BD36006A8AC8 /* MainViewController.swift in Sources */,
+				660A6C882C6A62B0006EA864 /* TripTextField.swift in Sources */,
 				66522AA52C56D115006A8AC8 /* ProfileViewController.swift in Sources */,
 				66522A8A2C56BD36006A8AC8 /* AppDelegate.swift in Sources */,
 				66522AC22C59A3BF006A8AC8 /* TripLabel.swift in Sources */,

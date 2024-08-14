@@ -24,6 +24,22 @@ final class FavoritesViewModel {
         }
     }
     
+    func isLiked(tripId: String) -> Bool {
+        var result = false
+        userService.getCurrentUser { user in
+            result = user.likedTrips.contains(where: { $0 == tripId })
+        }
+        return result
+    }
+    
+    func getLikesNumber(tripId: String) -> Int {
+        var result = 0
+        userService.getUsersLiked(tripId: tripId) { users in
+            result = users.count
+        }
+        return result
+    }
+    
     func getUserData(login: String) -> UserProfileData? {
         var userProfileData: UserProfileData? = nil
         userService.getUser(with: login) { user in
@@ -37,10 +53,22 @@ final class FavoritesViewModel {
         coordinator.openPage(userLogin: trip.userLogin)
     }
     
+    func changeLikeStatus(tripIndex: Int) {
+        let trip = savedTrips[tripIndex]
+        userService.getCurrentUser { user in
+            if isLiked(tripId: trip.id) {
+                user.likedTrips.removeAll { $0 == trip.id }
+            } else {
+                user.likedTrips.append(trip.id)
+            }
+        }
+        self.updateSavedTrips()
+    }
+    
     func removeFromFavorites(tripIndex: Int) {
-        storage.removeFavoriteTrip(with: tripIndex) { result in
+        let trip = savedTrips[tripIndex]
+        storage.removeFromFavorite(tripId: trip.id) { result in
             if result {
-                print("=== trip deleted")
                 self.updateSavedTrips()
             } else {
                 print("error: trip did not delete")

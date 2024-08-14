@@ -1,9 +1,9 @@
 import UIKit
 
 final class ProfileCoordinator {
-    private var startViewController: UIViewController?
     private let storage: TripStorage
     private let userService: UserService
+    private var startViewController: UIViewController?
     
     init(storage: TripStorage, userService: UserService, userLogin: String) {
         self.storage = storage
@@ -24,7 +24,7 @@ final class ProfileCoordinator {
         return startViewController ?? UIViewController()
     }
     
-    //можем перейти как в профиль каррентюзера, так и его друга
+    ///метод для перехода в профили юзеров из ленты или избранного
     func getProfilePage(userLogin: String) -> UIViewController {
         let vm = ProfileViewModel(coordinator: self, storage: storage, userService: userService, userLogin: userLogin)
         let vc = ProfileViewController(viewModel: vm)
@@ -32,10 +32,17 @@ final class ProfileCoordinator {
         return vc
     }
     
-    func showCreateTripForm(userLogin: String) {
-//        startViewController?.modalTransitionStyle = .flipHorizontal
-//        startViewController?.modalPresentationStyle = .overCurrentContext
-        let vm = ProfileViewModel(coordinator: self, storage: storage, userService: userService, userLogin: userLogin)
-        startViewController?.present(CreateTripViewController(viewModel: vm), animated: true)
+    ///открываем модальное окно с формой для создания поездки
+    func showCreateTripForm(viewModel: ProfileViewModel) {
+        startViewController?.present(
+            CreateTripViewController(viewModel: viewModel),
+            animated: true
+        )
+    }
+    
+    func presentImagePicker(delegate: UIImagePickerControllerDelegate & UINavigationControllerDelegate) {
+        let imagePicker = UIImagePickerController()
+        imagePicker.delegate = delegate
+        startViewController?.presentedViewController?.present(imagePicker, animated: true)
     }
 }

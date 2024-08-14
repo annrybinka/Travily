@@ -2,6 +2,7 @@ import UIKit
 
 protocol ProfileHeaderViewDelegate: AnyObject {
     func onCreateTripButtonTap()
+    func onMessageButtonTap()
 }
 
 final class ProfileHeaderView: UIView {
@@ -36,7 +37,7 @@ final class ProfileHeaderView: UIView {
     }
     
     private lazy var messageButton = ProfileButton(title: "Написать сообщение") {
-        print("message button tapped")
+        self.delegate?.onMessageButtonTap()
     }
     
     private lazy var stackView: UIStackView = {

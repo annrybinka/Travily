@@ -26,6 +26,10 @@ final class MainCoordinator {
     }
     
     func openPage(userLogin: String) {
-        startViewController?.navigationController?.pushViewController(appCoordinator.getProfilePage(userLogin: userLogin), animated: true)
+        if userService.isCurrentUser(login: userLogin) {
+            appCoordinator.goToMyProfile()
+        } else {
+            startViewController?.navigationController?.pushViewController(appCoordinator.getProfilePage(userLogin: userLogin), animated: true)
+        }
     }
 }

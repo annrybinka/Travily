@@ -6,9 +6,9 @@ final class MainViewModel {
     private let userService: UserService
     
     var onUsersTripsDidChange: (([Trip]) -> Void)?
-    private(set) var allUsersTrips: [Trip] = [] {
+    private(set) var feedTrips: [Trip] = [] {
         didSet {
-            onUsersTripsDidChange?(allUsersTrips)
+            onUsersTripsDidChange?(feedTrips)
         }
     }
     
@@ -19,18 +19,37 @@ final class MainViewModel {
     }
     
     ///получаем поездки всех, на кого подписан текущий авторизованный юзер + его поездки
-    func updateAllUsersTrips() {
-        storage.getAllTrips(by: ["Rachel78", "doctor-ross", "thebestgirl"]) { trips in
-            self.allUsersTrips = trips
+    func updateFeedTrips() {
+        storage.getAllTrips(
+            by: ["Rachel78", "doctor-ross", "thebestgirl"]
+        ) { [weak self] trips in
+            self?.feedTrips = trips
         }
     }
     
-    func isFavorite(tripId: Int) -> Bool {
-        var isFavorite = false
-        storage.isFavorite(tripId: tripId) { result in
-            isFavorite = result
+    ///получаем данные для конфигурации ячеек с поездками
+    func isFavorite(tripId: String) -> Bool {
+        var result = false
+        userService.getCurrentUser { user in
+            result = user.favoriteTrips.contains(where: { $0.id == tripId })
         }
-        return isFavorite
+        return result
+    }
+    
+    func isLiked(tripId: String) -> Bool {
+        var result = false
+        userService.getCurrentUser { user in
+            result = user.likedTrips.contains(where: { $0 == tripId })
+        }
+        return result
+    }
+    
+    func getLikesNumber(tripId: String) -> Int {
+        var result = 0
+        userService.getUsersLiked(tripId: tripId) { users in
+            result = users.count
+        }
+        return result
     }
     
     func getUserData(login: String) -> UserProfileData? {
@@ -41,20 +60,30 @@ final class MainViewModel {
         return userProfileData
     }
     
+    ///обработка нажатий на разные элементы ячейки с поездкой
     func goToAuthorPage(tripIndex: Int) {
-        let trip = allUsersTrips[tripIndex]
+        let trip = feedTrips[tripIndex]
         coordinator.openPage(userLogin: trip.userLogin)
     }
     
+    func changeLikeStatus(tripIndex: Int) {
+        let trip = feedTrips[tripIndex]
+        userService.getCurrentUser { user in
+            if isLiked(tripId: trip.id) {
+                user.likedTrips.removeAll { $0 == trip.id }
+            } else {
+                user.likedTrips.append(trip.id)
+            }
+        }
+        self.updateFeedTrips()
+    }
+    
     func changeFavoriteStatus(tripIndex: Int) {
-        var trip = allUsersTrips[tripIndex]
-        
-        //TODO: не работает удаление поста, isFavorite не меняется, всегда false
+        let trip = feedTrips[tripIndex]
         if isFavorite(tripId: trip.id) {
             storage.removeFromFavorite(tripId: trip.id) { result in
                 if result {
-                    print("=== trip deleted")
-                    self.updateAllUsersTrips()
+                    self.updateFeedTrips()
                 } else {
                     print("error: trip did not delete")
                 }
@@ -62,8 +91,7 @@ final class MainViewModel {
         } else {
             storage.saveFavorite(trip: trip) { result in
                 if result {
-                    print("=== trip saved")
-                    self.updateAllUsersTrips()
+                    self.updateFeedTrips()
                 } else {
                     print("error: trip did not saved")
                 }

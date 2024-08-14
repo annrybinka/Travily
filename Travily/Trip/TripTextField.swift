@@ -1,25 +1,17 @@
 import UIKit
 
-///Лейбл с кастомными шрифтами
-final class TripLabel: UILabel {
-    private let style: FontStyle.TextType
-    
-    init(style: FontStyle.TextType, text: String?) {
-        self.style = style
+///Поле для ввода текста с кастомными шрифтами
+final class TripTextField: UITextField {
+    init(style: FontStyle.TextType, placeholder: String?, delegate: UITextFieldDelegate?) {
         super.init(frame: .zero)
-        self.text = text
-        setupLabel()
-    }
-    
-    init(style: FontStyle.TextType) {
-        self.style = style
-        super.init(frame: .zero)
-        setupLabel()
-    }
-    
-    private func setupLabel() {
+        self.placeholder = placeholder
+        self.delegate = delegate
         
-        numberOfLines = 0
+        backgroundColor = AppСolor.forSecondBackground
+        tintColor = AppСolor.mainAccent
+        borderStyle = UITextField.BorderStyle.roundedRect
+        returnKeyType = UIReturnKeyType.next
+        
         switch style {
         case .boldTitle:
             font = FontStyle.boldTitleFont

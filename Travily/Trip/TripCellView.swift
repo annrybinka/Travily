@@ -45,7 +45,6 @@ final class TripCellView: UIView {
     private lazy var tripStackView: UIStackView = {
         let view = UIStackView()
         view.axis = .horizontal
-//        view.spacing = Spacing.base.rawValue
         view.addArrangedSubview(destinationStackView)
         view.addArrangedSubview(periodStackView)
         
@@ -82,16 +81,15 @@ final class TripCellView: UIView {
     
     private lazy var likeImageView: UIImageView = {
         let view = UIImageView()
-        view.image = UIImage(systemName: "hand.thumbsup")
-        view.tintColor = AppСolor.forText
         view.isUserInteractionEnabled = true
         
         return view
     }()
     
+    private lazy var likesLabel = TripLabel(style: .mediumText, text: nil)
+    
     private lazy var markImageView: UIImageView = {
         let view = UIImageView()
-        
         view.isUserInteractionEnabled = true
         
         return view
@@ -102,6 +100,9 @@ final class TripCellView: UIView {
         view.axis = .horizontal
         view.distribution = .equalSpacing
         view.addArrangedSubview(likeImageView)
+        view.setCustomSpacing(Spacing.small.rawValue, after: likeImageView)
+        view.addArrangedSubview(likesLabel)
+        view.addArrangedSubview(UIView())
         view.addArrangedSubview(markImageView)
         
         return view
@@ -145,6 +146,8 @@ final class TripCellView: UIView {
     func configure(
         trip: Trip,
         isFavorite: Bool,
+        isLiked: Bool,
+        likesNumber: Int,
         authorName: String,
         avatar: UIImage
     ) {
@@ -167,6 +170,14 @@ final class TripCellView: UIView {
         } else {
             markImageView.tintColor = AppСolor.forText
             markImageView.image = UIImage(systemName: "bookmark")
+        }
+        likesLabel.text = String(likesNumber)
+        if isLiked {
+            likeImageView.tintColor = AppСolor.mainAccent
+            likeImageView.image = UIImage(systemName: "hand.thumbsup.fill")
+        } else {
+            likeImageView.tintColor = AppСolor.forText
+            likeImageView.image = UIImage(systemName: "hand.thumbsup")
         }
     }
     
@@ -233,11 +244,11 @@ final class TripCellView: UIView {
                 ),
                 actionsStackView.leadingAnchor.constraint(
                     equalTo: leadingAnchor,
-                    constant: Spacing.big.rawValue
+                    constant: Spacing.large.rawValue
                 ),
                 actionsStackView.trailingAnchor.constraint(
                     equalTo: trailingAnchor,
-                    constant: -Spacing.big.rawValue
+                    constant: -Spacing.large.rawValue
                 ),
                 actionsStackView.bottomAnchor.constraint(
                     equalTo: bottomAnchor,
