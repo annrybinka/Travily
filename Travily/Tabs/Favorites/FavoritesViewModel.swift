@@ -2,8 +2,7 @@ import Foundation
     
 final class FavoritesViewModel {
     private let coordinator: FavoritesCoordinator
-    private let storage: TripStorage
-    private let userService: UserService
+    private let userService: TripUserService
 
     var onSavedTripsDidChange: (([Trip]) -> Void)?
     private(set) var savedTrips: [Trip] = [] {
@@ -12,18 +11,18 @@ final class FavoritesViewModel {
         }
     }
     
-    init(coordinator: FavoritesCoordinator, storage: TripStorage, userService: UserService) {
+    init(coordinator: FavoritesCoordinator, userService: TripUserService) {
         self.coordinator = coordinator
-        self.storage = storage
         self.userService = userService
     }
 
     func updateSavedTrips() {
-        storage.getFavoriteTrips() { trips in
+        userService.getAllFavoriteTrips() { trips in
             self.savedTrips = trips
         }
     }
     
+    ///получаем данные для конфигурации ячеек с поездками    
     func isLiked(tripId: String) -> Bool {
         var result = false
         userService.getCurrentUser { user in
@@ -48,6 +47,7 @@ final class FavoritesViewModel {
         return userProfileData
     }
     
+    ///обработка нажатий на разные элементы ячейки с поездкой
     func goToAuthorPage(tripIndex: Int) {
         let trip = savedTrips[tripIndex]
         coordinator.openPage(userLogin: trip.userLogin)
@@ -55,23 +55,22 @@ final class FavoritesViewModel {
     
     func changeLikeStatus(tripIndex: Int) {
         let trip = savedTrips[tripIndex]
-        userService.getCurrentUser { user in
-            if isLiked(tripId: trip.id) {
-                user.likedTrips.removeAll { $0 == trip.id }
+        userService.changeLikeStatus(tripId: trip.id) { [weak self] result in
+            if result {
+                self?.updateSavedTrips()
             } else {
-                user.likedTrips.append(trip.id)
+                print("error: LikeStatus did not change")
             }
         }
-        self.updateSavedTrips()
     }
     
     func removeFromFavorites(tripIndex: Int) {
         let trip = savedTrips[tripIndex]
-        storage.removeFromFavorite(tripId: trip.id) { result in
+        userService.changeFavoriteStatus(tripId: trip.id) { [weak self] result in
             if result {
-                self.updateSavedTrips()
+                self?.updateSavedTrips()
             } else {
-                print("error: trip did not delete")
+                print("error: FavoriteStatus did not change")
             }
         }
     }

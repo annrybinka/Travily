@@ -14,20 +14,22 @@ final class TripTableViewCell: UITableViewCell {
     }
     
     func configure(
-        with trip: Trip,
+        trip: Trip,
+        authorName: String,
+        avatar: UIImage,
+        isMine: Bool,
         isFavorite: Bool,
         isLiked: Bool,
-        likesNumber: Int,
-        authorName: String,
-        avatar: UIImage
+        likesNumber: Int
     ) {
         viewForCell.configure(
             trip: trip,
+            authorName: authorName,
+            avatar: avatar,
+            isMine: isMine,
             isFavorite: isFavorite,
             isLiked: isLiked,
-            likesNumber: likesNumber,
-            authorName: authorName,
-            avatar: avatar
+            likesNumber: likesNumber
         )
     }
     

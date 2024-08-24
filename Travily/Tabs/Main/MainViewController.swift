@@ -75,12 +75,13 @@ extension MainViewController: UITableViewDataSource {
         let trip = trips[indexPath.row]
         let author = viewModel.getUserData(login: trip.userLogin)
         cell.configure(
-            with: trip,
+            trip: trip,
+            authorName: author?.fullName ?? "",
+            avatar: author?.avatar ?? UIImage(),
+            isMine: viewModel.isMine(tripIndex: indexPath.row),
             isFavorite: viewModel.isFavorite(tripId: trip.id),
             isLiked: viewModel.isLiked(tripId: trip.id),
-            likesNumber: viewModel.getLikesNumber(tripId: trip.id),
-            authorName: author?.fullName ?? "",
-            avatar: author?.avatar ?? UIImage()
+            likesNumber: viewModel.getLikesNumber(tripId: trip.id)
         )
         return cell
     }
@@ -90,6 +91,11 @@ extension MainViewController: TripCellViewDelegate {
     func onAuthorTap(in view: TripCellView) {
         let index = view.tag
         viewModel.goToAuthorPage(tripIndex: index)
+    }
+    
+    func onXmarkTap(in view: TripCellView) {
+        let index = view.tag
+        viewModel.deleteTrip(tripIndex: index)
     }
     
     func onLikeTap(in view: TripCellView) {

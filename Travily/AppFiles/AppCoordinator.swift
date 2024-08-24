@@ -1,14 +1,67 @@
 import UIKit
+import RealmSwift
 
 final class AppCoordinator {
     var window: UIWindow?
     private var tabBarController = UITabBarController()
-    private let userService = UserService()
-    private lazy var tripStorage: TripStorage = {
-        TripStorage(userService: self.userService)
-    }()
+    private let userService = TripUserService()
+    
+    private func cleanRealm() {
+        do {
+            let realm = try Realm()
+            try realm.write {
+                realm.deleteAll()
+            }
+        } catch {
+            print(error.localizedDescription)
+        }
+    }
+    
+    private func addAllUsersToRealm() {
+        do {
+            let realm = try Realm()
+            let users = [userRachel, userFibs, userRoss, testUser]
+            if realm.isInWriteTransaction {
+                users.forEach {
+                    realm.create(UserRealm.self, value: $0.keyedValues)
+                }
+            } else {
+                try realm.write {
+                    users.forEach {
+                        realm.create(UserRealm.self, value: $0.keyedValues)
+                    }
+                }
+            }
+        } catch {
+            print(error.localizedDescription)
+        }
+    }
+    
+    private func addAllTripsToRealm() {
+        do {
+            let realm = try Realm()
+            let allTrips = rachelTrips + fibsTrips + rossTrips
+            if realm.isInWriteTransaction {
+                allTrips.forEach {
+                    realm.create(TripRealm.self, value: $0.keyedValues)
+                }
+            } else {
+                try realm.write {
+                    allTrips.forEach {
+                        realm.create(TripRealm.self, value: $0.keyedValues)
+                    }
+                }
+            }
+        } catch {
+            print(error.localizedDescription)
+        }
+    }
     
     func startApp() {
+        //TODO: сделать логику с авторизацией
+//        addAllUsersToRealm()
+//        addAllTripsToRealm()
+//        cleanRealm()
         showMainScreen()
     }
     
@@ -17,34 +70,22 @@ final class AppCoordinator {
     }
     
     func getProfilePage(userLogin: String) -> UIViewController {
-        let profileCoordinator = ProfileCoordinator(
-            storage: tripStorage,
-            userService: userService,
-            userLogin: userLogin
-        )
+        let profileCoordinator = ProfileCoordinator(userService: userService)
         let userPage = profileCoordinator.getProfilePage(userLogin: userLogin)
         
         return userPage
     }
     
     private func showMainScreen() {
-        var login = ""
-        userService.getCurrentUser { user in
-            login = user.login
-        }
         let mainCoordinator = MainCoordinator(
             appCoordinator: self,
-            storage: tripStorage,
             userService: userService
         )
         let profileCoordinator = ProfileCoordinator(
-            storage: tripStorage,
-            userService: userService,
-            userLogin: login
+            userService: userService
         )
         let favoritesCoordinator = FavoritesCoordinator(
             appCoordinator: self,
-            storage: tripStorage,
             userService: userService
         )
         let controllers = [

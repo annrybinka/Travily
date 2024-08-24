@@ -8,6 +8,17 @@ struct Trip {
     let about: String?
     ///значение опционально, чтобы в тестовых экземплярах не ставить заглушку ?? UIImage()
     let images: [UIImage?]
+    
+    var keyedValues: [String: Any?] {
+        [
+            "id": id,
+            "userLogin": userLogin,
+            "destination": destination,
+            "period": period,
+            "about": about,
+            "images": images.map { $0?.pngData() }
+        ]
+    }
 }
 
 struct TripData {
