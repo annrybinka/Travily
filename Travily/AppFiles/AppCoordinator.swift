@@ -6,62 +6,16 @@ final class AppCoordinator {
     private var tabBarController = UITabBarController()
     private let userService = TripUserService()
     
-    private func cleanRealm() {
-        do {
-            let realm = try Realm()
-            try realm.write {
-                realm.deleteAll()
-            }
-        } catch {
-            print(error.localizedDescription)
-        }
-    }
-    
-    private func addAllUsersToRealm() {
-        do {
-            let realm = try Realm()
-            let users = [userRachel, userFibs, userRoss, testUser]
-            if realm.isInWriteTransaction {
-                users.forEach {
-                    realm.create(UserRealm.self, value: $0.keyedValues)
-                }
-            } else {
-                try realm.write {
-                    users.forEach {
-                        realm.create(UserRealm.self, value: $0.keyedValues)
-                    }
-                }
-            }
-        } catch {
-            print(error.localizedDescription)
-        }
-    }
-    
-    private func addAllTripsToRealm() {
-        do {
-            let realm = try Realm()
-            let allTrips = rachelTrips + fibsTrips + rossTrips
-            if realm.isInWriteTransaction {
-                allTrips.forEach {
-                    realm.create(TripRealm.self, value: $0.keyedValues)
-                }
-            } else {
-                try realm.write {
-                    allTrips.forEach {
-                        realm.create(TripRealm.self, value: $0.keyedValues)
-                    }
-                }
-            }
-        } catch {
-            print(error.localizedDescription)
-        }
-    }
-    
     func startApp() {
-        //TODO: сделать логику с авторизацией
-//        addAllUsersToRealm()
-//        addAllTripsToRealm()
-//        cleanRealm()
+        guard UserDefaults.standard.string(forKey: "currentUserLogin") != nil else {
+            UserDefaults.standard.setValue(
+                userService.currentUserLogin,
+                forKey: "currentUserLogin"
+            )
+            addStaticInfoToRealm()
+            showMainScreen()
+            return
+        }
         showMainScreen()
     }
     
@@ -74,6 +28,46 @@ final class AppCoordinator {
         let userPage = profileCoordinator.getProfilePage(userLogin: userLogin)
         
         return userPage
+    }
+    
+    private func addStaticInfoToRealm() {
+        do {
+            let realm = try Realm()
+            let users = LocalStorage().getLocalUsers()
+            let trips = LocalStorage().getLocalTrips()
+            
+            if realm.isInWriteTransaction {
+                users.forEach {
+                    realm.create(UserRealm.self, value: $0.keyedValues)
+                }
+                trips.forEach {
+                    realm.create(TripRealm.self, value: $0.keyedValues)
+                }
+            } else {
+                try realm.write {
+                    users.forEach {
+                        realm.create(UserRealm.self, value: $0.keyedValues)
+                    }
+                    trips.forEach {
+                        realm.create(TripRealm.self, value: $0.keyedValues)
+                    }
+                }
+            }
+        } catch {
+            print(error.localizedDescription)
+        }
+    }
+    
+    private func rebootRealm() {
+        do {
+            let realm = try Realm()
+            try realm.write {
+                realm.deleteAll()
+            }
+        } catch {
+            print(error.localizedDescription)
+        }
+        addStaticInfoToRealm()
     }
     
     private func showMainScreen() {

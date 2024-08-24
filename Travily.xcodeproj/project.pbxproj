@@ -41,6 +41,7 @@
 		66D865292C76205E0074D2BD /* TripRealm.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66D865282C76205E0074D2BD /* TripRealm.swift */; };
 		66D8652F2C762DA00074D2BD /* RealmSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 66D8652E2C762DA00074D2BD /* RealmSwift */; };
 		66D865302C762DB70074D2BD /* RealmSwift in Embed Frameworks */ = {isa = PBXBuildFile; productRef = 66D8652E2C762DA00074D2BD /* RealmSwift */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
+		66D865322C7A910F0074D2BD /* LocalStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66D865312C7A910F0074D2BD /* LocalStorage.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -92,6 +93,7 @@
 		66522ADD2C691A08006A8AC8 /* UserProfileData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserProfileData.swift; sourceTree = "<group>"; };
 		66D865212C75FF510074D2BD /* UserRealm.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserRealm.swift; sourceTree = "<group>"; };
 		66D865282C76205E0074D2BD /* TripRealm.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TripRealm.swift; sourceTree = "<group>"; };
+		66D865312C7A910F0074D2BD /* LocalStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalStorage.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -154,6 +156,7 @@
 				66522A8B2C56BD36006A8AC8 /* SceneDelegate.swift */,
 				66522A9D2C56C692006A8AC8 /* AppCoordinator.swift */,
 				66522AD92C641D37006A8AC8 /* TripUserService.swift */,
+				66D865312C7A910F0074D2BD /* LocalStorage.swift */,
 			);
 			path = AppFiles;
 			sourceTree = "<group>";
@@ -322,6 +325,7 @@
 				66522AAB2C56E113006A8AC8 /* ProfileCoordinator.swift in Sources */,
 				66522AB82C581F26006A8AC8 /* TripTableViewCell.swift in Sources */,
 				66522AB42C580D6E006A8AC8 /* User.swift in Sources */,
+				66D865322C7A910F0074D2BD /* LocalStorage.swift in Sources */,
 				66522ACE2C625E86006A8AC8 /* ProfileViewModel.swift in Sources */,
 				66D865292C76205E0074D2BD /* TripRealm.swift in Sources */,
 				66522ABF2C599BDE006A8AC8 /* Spacing.swift in Sources */,

@@ -2,7 +2,7 @@ import UIKit
 import RealmSwift
 
 final class TripUserService {
-    private let currentUserLogin = "Rachel78"
+    let currentUserLogin = "Rachel78"
     
     ///методы для получения текущего или любого пользователя по его логину
     func getCurrentUser(handler: @escaping (User) -> Void) {
@@ -110,19 +110,20 @@ final class TripUserService {
                 return
             }
             let id = "trip\(Date.now)\(user.login ?? currentUserLogin)"
+            let trip = Trip(
+                id: id,
+                userLogin: user.login ?? currentUserLogin,
+                destination: tripData.destination,
+                period: tripData.period,
+                about: tripData.about,
+                images: tripData.images
+            )
             
             try realm.write {
                 user.trips.insert(id, at: 0)
                 realm.create(
                     TripRealm.self,
-                    value: Trip(
-                        id: id,
-                        userLogin: user.login ?? currentUserLogin,
-                        destination: tripData.destination,
-                        period: tripData.period,
-                        about: tripData.about,
-                        images: tripData.images
-                    ).keyedValues
+                    value: trip.keyedValues
                 )
                 handler(true)
             }
