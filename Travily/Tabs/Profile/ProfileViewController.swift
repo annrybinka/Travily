@@ -104,12 +104,13 @@ extension ProfileViewController: UITableViewDataSource {
         let trip = userTrips[indexPath.row]
         let author = viewModel.getUserData()
         cell.configure(
-            with: trip,
+            trip: trip,
+            authorName: author?.fullName ?? "",
+            avatar: author?.avatar ?? UIImage(),
+            isMine: viewModel.isCurrentUser,
             isFavorite: viewModel.isFavorite(tripId: trip.id),
             isLiked: viewModel.isLiked(tripId: trip.id),
-            likesNumber: viewModel.getLikesNumber(tripId: trip.id),
-            authorName: author?.fullName ?? "",
-            avatar: author?.avatar ?? UIImage()
+            likesNumber: viewModel.getLikesNumber(tripId: trip.id)
         )
         return cell
     }
@@ -118,6 +119,11 @@ extension ProfileViewController: UITableViewDataSource {
 extension ProfileViewController: TripCellViewDelegate {
     func onAuthorTap(in view: TripCellView) {
         tableView.scrollRectToVisible(CGRect(x: 0, y: 0, width: 1, height: 1), animated: true)
+    }
+    
+    func onXmarkTap(in view: TripCellView) {
+        let index = view.tag
+        viewModel.deleteTrip(tripIndex: index)
     }
     
     func onLikeTap(in view: TripCellView) {

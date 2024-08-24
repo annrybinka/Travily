@@ -2,18 +2,16 @@ import UIKit
 
 final class MainCoordinator {
     private let appCoordinator: AppCoordinator
-    private let storage: TripStorage
-    private let userService: UserService
+    private let userService: TripUserService
     private var startViewController: UIViewController?
     
-    init(appCoordinator: AppCoordinator, storage: TripStorage, userService: UserService) {
+    init(appCoordinator: AppCoordinator, userService: TripUserService) {
         self.appCoordinator = appCoordinator
-        self.storage = storage
         self.userService = userService
     }
     
     func startView() -> UIViewController {
-        let vm = MainViewModel(coordinator: self, storage: storage, userService: userService)
+        let vm = MainViewModel(coordinator: self, userService: userService)
         let vc = MainViewController(viewModel: vm)
         vc.tabBarItem = UITabBarItem(
             title: StringConstant.TabBarTitle.main,

@@ -2,6 +2,7 @@ import UIKit
 
 protocol TripCellViewDelegate: AnyObject {
     func onAuthorTap(in view: TripCellView)
+    func onXmarkTap(in view: TripCellView)
     func onLikeTap(in view: TripCellView)
     func onMarkTap(in view: TripCellView)
 }
@@ -11,6 +12,16 @@ final class TripCellView: UIView {
     weak var delegate: TripCellViewDelegate?
     
     private lazy var authorStackView = UserHeaderStackView()
+    
+    private lazy var xmarkImageView: UIImageView = {
+        let view = UIImageView()
+        view.image = UIImage(systemName: "xmark")
+        view.tintColor = AppСolor.forText
+        view.isUserInteractionEnabled = true
+        
+        return view
+    }()
+    
     private lazy var tripTitleLabel = TripLabel(
         style: .smallLightText,
         text: StringConstant.destination
@@ -123,6 +134,9 @@ final class TripCellView: UIView {
         let tapOnAuthorGesture = UITapGestureRecognizer(target: self, action: #selector(tapOnAuthor))
         authorStackView.addGestureRecognizer(tapOnAuthorGesture)
         
+        let tapOnXmarkGesture = UITapGestureRecognizer(target: self, action: #selector(tapOnXmark))
+        xmarkImageView.addGestureRecognizer(tapOnXmarkGesture)
+        
         let tapOnLikeGesture = UITapGestureRecognizer(target: self, action: #selector(tapOnLike))
         likeImageView.addGestureRecognizer(tapOnLikeGesture)
         
@@ -133,11 +147,12 @@ final class TripCellView: UIView {
     @objc private func tapOnAuthor(sender: UILongPressGestureRecognizer) {
         delegate?.onAuthorTap(in: self)
     }
-    
+    @objc private func tapOnXmark(sender: UILongPressGestureRecognizer) {
+        delegate?.onXmarkTap(in: self)
+    }
     @objc private func tapOnLike(sender: UILongPressGestureRecognizer) {
         delegate?.onLikeTap(in: self)
     }
-    
     @objc private func tapOnMark(sender: UILongPressGestureRecognizer) {
         delegate?.onMarkTap(in: self)
     }
@@ -145,11 +160,12 @@ final class TripCellView: UIView {
     ///Наполняем вью информацией о поездке
     func configure(
         trip: Trip,
+        authorName: String,
+        avatar: UIImage,
+        isMine: Bool,
         isFavorite: Bool,
         isLiked: Bool,
-        likesNumber: Int,
-        authorName: String,
-        avatar: UIImage
+        likesNumber: Int
     ) {
         authorStackView.configure(image: avatar, name: authorName)
         tripDestinationLabel.text = trip.destination
@@ -163,6 +179,11 @@ final class TripCellView: UIView {
             view.clipsToBounds = true
             view.heightAnchor.constraint(equalTo: view.widthAnchor).isActive = true
             photoStackView.addArrangedSubview(view)
+        }
+        if isMine {
+            xmarkImageView.isHidden = false
+        } else {
+            xmarkImageView.isHidden = true
         }
         if isFavorite {
             markImageView.tintColor = AppСolor.mainAccent
@@ -185,18 +206,17 @@ final class TripCellView: UIView {
         backgroundColor = AppСolor.forSecondBackground
         layer.cornerRadius = Spacing.doubleBase.rawValue
         clipsToBounds = true
-        
-        addSubview(headerStackView)
-        addSubview(photoStackView)
-        addSubview(aboutTripLabel)
-        addSubview(delimiter)
-        addSubview(actionsStackView)
-        
-        headerStackView.translatesAutoresizingMaskIntoConstraints = false
-        photoStackView.translatesAutoresizingMaskIntoConstraints = false
-        aboutTripLabel.translatesAutoresizingMaskIntoConstraints = false
-        delimiter.translatesAutoresizingMaskIntoConstraints = false
-        actionsStackView.translatesAutoresizingMaskIntoConstraints = false
+        [
+            headerStackView,
+            xmarkImageView,
+            photoStackView,
+            aboutTripLabel,
+            delimiter,
+            actionsStackView
+        ].forEach {
+            addSubview($0)
+            $0.translatesAutoresizingMaskIntoConstraints = false
+        }
         
         NSLayoutConstraint.activate(
             [
@@ -212,6 +232,10 @@ final class TripCellView: UIView {
                     equalTo: trailingAnchor,
                     constant: -Spacing.base.rawValue
                 ),
+                
+                xmarkImageView.centerYAnchor.constraint(equalTo: authorStackView.centerYAnchor),
+                xmarkImageView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -Spacing.doubleBase.rawValue),
+                
                 photoStackView.topAnchor.constraint(
                     equalTo: headerStackView.bottomAnchor,
                     constant: Spacing.small.rawValue

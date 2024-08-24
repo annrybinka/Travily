@@ -26,7 +26,6 @@ final class FavoritesViewController: UIViewController {
         super.viewWillAppear(animated)
         navigationController?.navigationBar.prefersLargeTitles = true
         viewModel.updateSavedTrips()
-        tableView.reloadData()
     }
     
     override func viewDidLoad() {
@@ -76,12 +75,13 @@ extension FavoritesViewController: UITableViewDataSource {
         let trip = favoriteTrips[indexPath.row]
         let author = viewModel.getUserData(login: trip.userLogin)
         cell.configure(
-            with: trip,
+            trip: trip,
+            authorName: author?.fullName ?? "",
+            avatar: author?.avatar ?? UIImage(),
+            isMine: false,
             isFavorite: true,
             isLiked: viewModel.isLiked(tripId: trip.id),
-            likesNumber: viewModel.getLikesNumber(tripId: trip.id),
-            authorName: author?.fullName ?? "",
-            avatar: author?.avatar ?? UIImage()
+            likesNumber: viewModel.getLikesNumber(tripId: trip.id)
         )
         return cell
     }
@@ -91,6 +91,10 @@ extension FavoritesViewController: TripCellViewDelegate {
     func onAuthorTap(in view: TripCellView) {
         let index = view.tag
         viewModel.goToAuthorPage(tripIndex: index)
+    }
+    
+    func onXmarkTap(in view: TripCellView) {
+        ///в разделе "Избраноое" нет возможности удалить поездку
     }
     
     func onLikeTap(in view: TripCellView) {

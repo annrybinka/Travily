@@ -2,18 +2,16 @@ import UIKit
 
 final class FavoritesCoordinator {
     private let appCoordinator: AppCoordinator
-    private let storage: TripStorage
-    private let userService: UserService
+    private let userService: TripUserService
     private var startViewController: UIViewController?
     
-    init(appCoordinator: AppCoordinator, storage: TripStorage, userService: UserService) {
+    init(appCoordinator: AppCoordinator, userService: TripUserService) {
         self.appCoordinator = appCoordinator
-        self.storage = storage
         self.userService = userService
     }
     
     func startView() -> UIViewController {
-        let vm = FavoritesViewModel(coordinator: self, storage: storage, userService: userService)
+        let vm = FavoritesViewModel(coordinator: self, userService: userService)
         let vc = FavoritesViewController(viewModel: vm)
         vc.tabBarItem = UITabBarItem(
             title: StringConstant.TabBarTitle.favorites,

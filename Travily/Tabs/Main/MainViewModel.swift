@@ -2,8 +2,7 @@ import Foundation
 
 final class MainViewModel {
     private let coordinator: MainCoordinator
-    private let storage: TripStorage
-    private let userService: UserService
+    private let userService: TripUserService
     
     var onUsersTripsDidChange: (([Trip]) -> Void)?
     private(set) var feedTrips: [Trip] = [] {
@@ -12,26 +11,31 @@ final class MainViewModel {
         }
     }
     
-    init(coordinator: MainCoordinator, storage: TripStorage, userService: UserService) {
+    init(coordinator: MainCoordinator, userService: TripUserService) {
         self.coordinator = coordinator
-        self.storage = storage
         self.userService = userService
     }
     
     ///получаем поездки всех, на кого подписан текущий авторизованный юзер + его поездки
     func updateFeedTrips() {
-        storage.getAllTrips(
-            by: ["Rachel78", "doctor-ross", "thebestgirl"]
-        ) { [weak self] trips in
-            self?.feedTrips = trips
+        userService.getCurrentUser { [weak self] user in
+            let usersForFeed = user.subscriptions + [user.login]
+            self?.userService.getAllTrips(by: usersForFeed) { trips in
+                self?.feedTrips = trips
+            }
         }
     }
     
     ///получаем данные для конфигурации ячеек с поездками
+    func isMine(tripIndex: Int) -> Bool {
+        let trip = feedTrips[tripIndex]
+        return userService.isCurrentUser(login: trip.userLogin)
+    }
+    
     func isFavorite(tripId: String) -> Bool {
         var result = false
         userService.getCurrentUser { user in
-            result = user.favoriteTrips.contains(where: { $0.id == tripId })
+            result = user.favoriteTrips.contains(where: { $0 == tripId })
         }
         return result
     }
@@ -39,7 +43,7 @@ final class MainViewModel {
     func isLiked(tripId: String) -> Bool {
         var result = false
         userService.getCurrentUser { user in
-            result = user.likedTrips.contains(where: { $0 == tripId })
+            result = user.likedTrips.contains { $0 == tripId }
         }
         return result
     }
@@ -66,35 +70,35 @@ final class MainViewModel {
         coordinator.openPage(userLogin: trip.userLogin)
     }
     
-    func changeLikeStatus(tripIndex: Int) {
+    func deleteTrip(tripIndex: Int) {
         let trip = feedTrips[tripIndex]
-        userService.getCurrentUser { user in
-            if isLiked(tripId: trip.id) {
-                user.likedTrips.removeAll { $0 == trip.id }
+        userService.delete(tripId: trip.id) { result in
+            if result {
+                self.updateFeedTrips()
             } else {
-                user.likedTrips.append(trip.id)
+                print("error: trip did not delete")
             }
         }
-        self.updateFeedTrips()
+    }
+
+    func changeLikeStatus(tripIndex: Int) {
+        let trip = feedTrips[tripIndex]
+        userService.changeLikeStatus(tripId: trip.id) { [weak self] result in
+            if result {
+                self?.updateFeedTrips()
+            } else {
+                print("error: LikeStatus did not change")
+            }
+        }
     }
     
     func changeFavoriteStatus(tripIndex: Int) {
         let trip = feedTrips[tripIndex]
-        if isFavorite(tripId: trip.id) {
-            storage.removeFromFavorite(tripId: trip.id) { result in
-                if result {
-                    self.updateFeedTrips()
-                } else {
-                    print("error: trip did not delete")
-                }
-            }
-        } else {
-            storage.saveFavorite(trip: trip) { result in
-                if result {
-                    self.updateFeedTrips()
-                } else {
-                    print("error: trip did not saved")
-                }
+        userService.changeFavoriteStatus(tripId: trip.id) { [weak self] result in
+            if result {
+                self?.updateFeedTrips()
+            } else {
+                print("error: FavoriteStatus did not change")
             }
         }
     }

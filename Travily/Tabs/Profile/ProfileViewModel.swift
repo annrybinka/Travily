@@ -2,8 +2,7 @@ import UIKit
 
 final class ProfileViewModel {
     private let coordinator: ProfileCoordinator
-    private let storage: TripStorage
-    private let userService: UserService
+    private let userService: TripUserService
     private let userLogin: String
     lazy var isCurrentUser: Bool = {
         userService.isCurrentUser(login: userLogin)
@@ -21,23 +20,23 @@ final class ProfileViewModel {
         }
     }
     
-    init(coordinator: ProfileCoordinator, storage: TripStorage, userService: UserService, userLogin: String) {
+    init(coordinator: ProfileCoordinator, userService: TripUserService, userLogin: String) {
         self.coordinator = coordinator
-        self.storage = storage
         self.userService = userService
         self.userLogin = userLogin
     }
     
     func updateUserTrips() {
-        storage.getAllTrips(by: [userLogin]) { trips in
+        userService.getAllTrips(by: [userLogin]) { trips in
             self.userTrips = trips
         }
     }
     
+    ///получаем данные для конфигурации ячеек с поездками
     func isFavorite(tripId: String) -> Bool {
         var result = false
         userService.getCurrentUser { user in
-            result = user.favoriteTrips.contains(where: { $0.id == tripId })
+            result = user.favoriteTrips.contains(where: { $0 == tripId })
         }
         return result
     }
@@ -58,6 +57,7 @@ final class ProfileViewModel {
         return result
     }
     
+    ///получаем данные профиля через метод getUser, а не getCurrentUser, так как вьюмодель позволяет открыть страницу как текущего юзера, так и других пользователей
     func getUserData() -> UserProfileData? {
         var userProfileData: UserProfileData? = nil
         userService.getUser(with: userLogin) { user in
@@ -66,48 +66,52 @@ final class ProfileViewModel {
         return userProfileData
     }
     
-    func changeLikeStatus(tripIndex: Int) {
+    ///обработка нажатий на разные элементы ячейки с поездкой
+    func deleteTrip(tripIndex: Int) {
         let trip = userTrips[tripIndex]
-        userService.getCurrentUser { user in
-            if isLiked(tripId: trip.id) {
-                user.likedTrips.removeAll { $0 == trip.id }
+        userService.delete(tripId: trip.id) { result in
+            if result {
+                self.updateUserTrips()
             } else {
-                user.likedTrips.append(trip.id)
+                print("error: trip did not delete")
             }
         }
-        self.updateUserTrips()
+    }
+    
+    func changeLikeStatus(tripIndex: Int) {
+        let trip = userTrips[tripIndex]
+        userService.changeLikeStatus(tripId: trip.id) { [weak self] result in
+            if result {
+                self?.updateUserTrips()
+            } else {
+                print("error: LikeStatus did not change")
+            }
+        }
     }
     
     func changeFavoriteStatus(tripIndex: Int) {
         let trip = userTrips[tripIndex]
-        if isFavorite(tripId: trip.id) {
-            storage.removeFromFavorite(tripId: trip.id) { result in
-                if result {
-                    self.updateUserTrips()
-                } else {
-                    print("error: trip did not delete")
-                }
-            }
-        } else {
-            storage.saveFavorite(trip: trip) { result in
-                if result {
-                    self.updateUserTrips()
-                } else {
-                    print("error: trip did not saved")
-                }
+        userService.changeFavoriteStatus(tripId: trip.id) { [weak self] result in
+            if result {
+                self?.updateUserTrips()
+            } else {
+                print("error: FavoriteStatus did not change")
             }
         }
     }
     
+    ///обработка действий в хэдере профиля
     func createNew(trip: TripData) {
-        storage.addNew(tripData: trip) { result in
+        userService.addNewTrip(with: trip) { result in
             if result {
                 self.updateUserTrips()
             }
         }
     }
     
-    func showImagePicker(delegate: UIImagePickerControllerDelegate & UINavigationControllerDelegate) {
+    func showImagePicker(
+        delegate: UIImagePickerControllerDelegate & UINavigationControllerDelegate
+    ) {
         coordinator.presentImagePicker(delegate: delegate)
     }
 }
